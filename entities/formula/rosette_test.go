@@ -230,8 +230,8 @@ ignore_complex_conjugate: true
 coefficient_pairs: 
   multiplier: 1
   relationships:
-  - "-M-N"
-  - "+M+NF"
+  - -M-N
+  - +M+NF
 `)
 
 			zExponentialFormulaTerm, err := formula.NewZExponentialFormulaTermFromYAML(yamlByteStream)
@@ -246,12 +246,98 @@ coefficient_pairs:
 			Expect(zExponentialFormulaTerm.CoefficientPairs.OtherCoefficientRelationships[0]).To(Equal(formula.CoefficientRelationship(formula.MinusMMinusN)))
 			Expect(zExponentialFormulaTerm.CoefficientPairs.OtherCoefficientRelationships[1]).To(Equal(formula.CoefficientRelationship(formula.PlusMPlusNMaybeFlipScale)))
 		})
-//		It("Can create from YAML", func() {
-//			yamlByteStream := []byte(`TODO
-//`)
-//			rosetteFormula, err := formula.NewRosetteFormulaFromYAML(yamlByteStream)
-//			Expect(err).To(BeNil())
-//			Expect(rosetteFormula.Terms)
-//		})
+		It("Can create ZExponentialFormulaTerm from JSON", func() {
+			jsonByteStream := []byte(`{
+				"multiplier": {
+					"real": -1.0,
+					"imaginary": 2e-2
+				},
+				"power_n": 12,
+				"power_m": -10,
+				"ignore_complex_conjugate": true,
+				"coefficient_pairs": {
+				  "multiplier": 1,
+				  "relationships": ["-M-N", "+M+NF"]
+				}
+			}`)
+			zExponentialFormulaTerm, err := formula.NewZExponentialFormulaTermFromJSON(jsonByteStream)
+			Expect(err).To(BeNil())
+			Expect(real(zExponentialFormulaTerm.Multiplier)).To(BeNumerically("~", -1.0))
+			Expect(imag(zExponentialFormulaTerm.Multiplier)).To(BeNumerically("~", 2e-2))
+			Expect(zExponentialFormulaTerm.PowerN).To(Equal(12))
+			Expect(zExponentialFormulaTerm.PowerM).To(Equal(-10))
+			Expect(zExponentialFormulaTerm.IgnoreComplexConjugate).To(BeTrue())
+			Expect(zExponentialFormulaTerm.CoefficientPairs.Multiplier).To(BeNumerically("~", 1))
+			Expect(zExponentialFormulaTerm.CoefficientPairs.OtherCoefficientRelationships).To(HaveLen(2))
+			Expect(zExponentialFormulaTerm.CoefficientPairs.OtherCoefficientRelationships[0]).To(Equal(formula.CoefficientRelationship(formula.MinusMMinusN)))
+			Expect(zExponentialFormulaTerm.CoefficientPairs.OtherCoefficientRelationships[1]).To(Equal(formula.CoefficientRelationship(formula.PlusMPlusNMaybeFlipScale)))
+		})
+		It("Can create Rosette Formulas from YAML", func() {
+			yamlByteStream := []byte(`terms:
+  -
+    multiplier:
+      real: -1.0
+      imaginary: 2e-2
+    power_n: 3
+    power_m: 0
+    coefficient_pairs: 
+      multiplier: 1
+      relationships:
+      - -M-N
+      - "+M+NF"
+  -
+    multiplier:
+      real: 1e-10
+      imaginary: 0
+    power_n: 1
+    power_m: 1
+    coefficient_pairs:
+      multiplier: 1
+      relationships:
+      - -M-NF
+`)
+			rosetteFormula, err := formula.NewRosetteFormulaFromYAML(yamlByteStream)
+			Expect(err).To(BeNil())
+			Expect(rosetteFormula.Terms).To(HaveLen(2))
+			Expect(rosetteFormula.Terms[0].PowerN).To(Equal(3))
+			Expect(rosetteFormula.Terms[0].IgnoreComplexConjugate).To(BeFalse())
+			Expect(rosetteFormula.Terms[1].CoefficientPairs.OtherCoefficientRelationships[0]).To(Equal(formula.CoefficientRelationship(formula.MinusMMinusNMaybeFlipScale)))
+		})
+		It("Can create Rosette Formulas from JSON", func() {
+			jsonByteStream := []byte(`{
+				"terms": [
+					{
+						"multiplier": {
+							"real": -1.0,
+							"imaginary": 2e-2
+						},
+						"power_n": 3,
+						"power_m": 0,
+						"coefficient_pairs": {
+						  "multiplier": 1,
+						  "relationships": ["-M-N", "+M+NF"]
+						}
+					},
+					{
+						"multiplier": {
+							"real": 1e-10,
+							"imaginary": 0
+						},
+						"power_n": 1,
+						"power_m": 1,
+						"coefficient_pairs": {
+						  "multiplier": 1,
+						  "relationships": ["-M-NF"]
+						}
+					}
+				]
+			}`)
+			rosetteFormula, err := formula.NewRosetteFormulaFromJSON(jsonByteStream)
+			Expect(err).To(BeNil())
+			Expect(rosetteFormula.Terms).To(HaveLen(2))
+			Expect(rosetteFormula.Terms[0].PowerN).To(Equal(3))
+			Expect(rosetteFormula.Terms[0].IgnoreComplexConjugate).To(BeFalse())
+			Expect(rosetteFormula.Terms[1].CoefficientPairs.OtherCoefficientRelationships[0]).To(Equal(formula.CoefficientRelationship(formula.MinusMMinusNMaybeFlipScale)))
+		})
 	})
 })

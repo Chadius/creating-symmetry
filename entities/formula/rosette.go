@@ -1,6 +1,7 @@
 package formula
 
 import (
+	"encoding/json"
 	"gopkg.in/yaml.v2"
 	"math/cmplx"
 	"wallpaper/entities/utility"
@@ -30,11 +31,16 @@ type ZExponentialFormulaTerm struct {
 
 // NewZExponentialFormulaTermFromYAML reads the data and returns a RosetteFormula from it.
 func NewZExponentialFormulaTermFromYAML(data []byte) (*ZExponentialFormulaTerm, error) {
-	return newZExponentialFormulaTermFromYAMLDatastream(data, yaml.Unmarshal)
+	return newZExponentialFormulaTermFromDatastream(data, yaml.Unmarshal)
 }
 
-// newZExponentialFormulaTermFromYAMLDatastream consumes a given bytestream and tries to create a new object from it.
-func newZExponentialFormulaTermFromYAMLDatastream(data []byte, unmarshal utility.UnmarshalFunc) (*ZExponentialFormulaTerm, error) {
+// NewZExponentialFormulaTermFromJSON reads the data and returns a RosetteFormula from it.
+func NewZExponentialFormulaTermFromJSON(data []byte) (*ZExponentialFormulaTerm, error) {
+	return newZExponentialFormulaTermFromDatastream(data, json.Unmarshal)
+}
+
+// newZExponentialFormulaTermFromDatastream consumes a given bytestream and tries to create a new object from it.
+func newZExponentialFormulaTermFromDatastream(data []byte, unmarshal utility.UnmarshalFunc) (*ZExponentialFormulaTerm, error) {
 	var unmarshalError error
 	var formulaTermMarshal zExponentialFormulaTermMarshalable
 	unmarshalError = unmarshal(data, &formulaTermMarshal)
@@ -195,6 +201,37 @@ func SetCoefficientsBasedOnRelationship(powerN, powerM int, scale complex128, re
 
 // NewRosetteFormulaFromYAML reads the data and returns a RosetteFormula from it.
 func NewRosetteFormulaFromYAML(data []byte) (*RosetteFormula, error) {
-	//return newCreateWallpaperCommandFromDatastream(data, yaml.Unmarshal)
-	return nil, nil
+	return newRosetteFormulaFromDatastream(data, yaml.Unmarshal)
+}
+
+// NewRosetteFormulaFromJSON reads the data and returns a RosetteFormula from it.
+func NewRosetteFormulaFromJSON(data []byte) (*RosetteFormula, error) {
+	return newRosetteFormulaFromDatastream(data, json.Unmarshal)
+}
+
+type rosetteFormulaMarshalable struct {
+	Terms []*zExponentialFormulaTermMarshalable
+}
+
+// newRosetteFormulaFromDatastream consumes a given bytestream and tries to create a new object from it.
+func newRosetteFormulaFromDatastream(data []byte, unmarshal utility.UnmarshalFunc) (*RosetteFormula, error) {
+	var unmarshalError error
+	var rosetteFormulaMarshal rosetteFormulaMarshalable
+	unmarshalError = unmarshal(data, &rosetteFormulaMarshal)
+
+	if unmarshalError != nil {
+		return nil, unmarshalError
+	}
+
+	rosetteFormula := newRosetteFormulaFromMarshalObject(rosetteFormulaMarshal)
+	return rosetteFormula, nil
+}
+
+func newRosetteFormulaFromMarshalObject(marshalObject rosetteFormulaMarshalable) *RosetteFormula {
+	terms := []*ZExponentialFormulaTerm{}
+	for _, termMarshal := range marshalObject.Terms {
+		newTerm := newZExponentialFormulaTermFromMarshalObject(*termMarshal)
+		terms = append(terms, newTerm)
+	}
+	return &RosetteFormula{Terms: terms}
 }
