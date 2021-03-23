@@ -29,12 +29,12 @@ type ZExponentialFormulaTerm struct {
 	CoefficientPairs		LockedCoefficientPair
 }
 
-// NewZExponentialFormulaTermFromYAML reads the data and returns a RosetteFormula from it.
+// NewZExponentialFormulaTermFromYAML reads the data and returns a formula term from it.
 func NewZExponentialFormulaTermFromYAML(data []byte) (*ZExponentialFormulaTerm, error) {
 	return newZExponentialFormulaTermFromDatastream(data, yaml.Unmarshal)
 }
 
-// NewZExponentialFormulaTermFromJSON reads the data and returns a RosetteFormula from it.
+// NewZExponentialFormulaTermFromJSON reads the data and returns a formula term from it.
 func NewZExponentialFormulaTermFromJSON(data []byte) (*ZExponentialFormulaTerm, error) {
 	return newZExponentialFormulaTermFromDatastream(data, json.Unmarshal)
 }

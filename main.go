@@ -73,32 +73,32 @@ func transformCoordinatesForFriezeFormula(scaledCoordinates []complex128) []comp
 	friezeFormula := formula.FriezeFormula{
 		Terms: []*formula.EulerFormulaTerm{
 			{
-				Scale:                  complex(1e0, 0e2),
+				Multiplier:             complex(1e0, 0e2),
 				PowerN:                 6,
 				PowerM:                 0,
 				IgnoreComplexConjugate: true,
-				CoefficientPairs: formula.LockedCoefficientPair{},
+				CoefficientPairs:       formula.LockedCoefficientPair{},
 			},
 			{
-				Scale:                  complex(1e0, 0e2),
+				Multiplier:             complex(1e0, 0e2),
 				PowerN:                 -6,
 				PowerM:                 0,
 				IgnoreComplexConjugate: true,
-				CoefficientPairs: formula.LockedCoefficientPair{},
+				CoefficientPairs:       formula.LockedCoefficientPair{},
 			},
 			{
-				Scale:                  complex(1e0, 0e2),
+				Multiplier:             complex(1e0, 0e2),
 				PowerN:                 12,
 				PowerM:                 0,
 				IgnoreComplexConjugate: true,
-				CoefficientPairs: formula.LockedCoefficientPair{},
+				CoefficientPairs:       formula.LockedCoefficientPair{},
 			},
 			{
-				Scale:                  complex(1e0, 0e2),
+				Multiplier:             complex(1e0, 0e2),
 				PowerN:                 -12,
 				PowerM:                 0,
 				IgnoreComplexConjugate: true,
-				CoefficientPairs: formula.LockedCoefficientPair{},
+				CoefficientPairs:       formula.LockedCoefficientPair{},
 			},
 		},
 	}

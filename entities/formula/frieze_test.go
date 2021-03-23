@@ -7,11 +7,11 @@ import (
 	"wallpaper/entities/formula"
 )
 
-var _ = Describe("Common formula formats", func() {
+var _ = Describe("Frieze formula", func() {
 	Context("Terms that involve e^(inz) * e^(-imzConj)", func() {
 		It("Can calculate a formula that uses Euler and complex numbers", func() {
 			form := formula.EulerFormulaTerm{
-				Scale:                  complex(3, 0),
+				Multiplier:             complex(3, 0),
 				PowerN:                 2,
 				PowerM:                 0,
 				IgnoreComplexConjugate: true,
@@ -22,7 +22,7 @@ var _ = Describe("Common formula formats", func() {
 		})
 		It("Can calculate a formula that uses locked coefficient pairs", func() {
 			form := formula.EulerFormulaTerm{
-				Scale:                  complex(3, 0),
+				Multiplier:             complex(3, 0),
 				PowerN:                 2,
 				PowerM:                 0,
 				IgnoreComplexConjugate: true,
@@ -39,7 +39,7 @@ var _ = Describe("Common formula formats", func() {
 		})
 		It("Can calculate a formula that uses the complex conjugate", func() {
 			form := formula.EulerFormulaTerm{
-				Scale:                  complex(3, 0),
+				Multiplier:             complex(3, 0),
 				PowerN:                 2,
 				PowerM:                 1,
 				IgnoreComplexConjugate: false,
@@ -54,9 +54,9 @@ var _ = Describe("Common formula formats", func() {
 		friezeFormula := formula.FriezeFormula{
 			Terms: []*formula.EulerFormulaTerm{
 				{
-					Scale: complex(2, 0),
-					PowerN: 1,
-					PowerM: 0,
+					Multiplier:             complex(2, 0),
+					PowerN:                 1,
+					PowerM:                 0,
 					IgnoreComplexConjugate: false,
 					CoefficientPairs: formula.LockedCoefficientPair{
 						Multiplier: 1,
@@ -80,9 +80,9 @@ var _ = Describe("Common formula formats", func() {
 			friezeFormula := formula.FriezeFormula{
 				Terms: []*formula.EulerFormulaTerm{
 					{
-						Scale: complex(1, 0),
-						PowerN: 2,
-						PowerM: 0,
+						Multiplier:             complex(1, 0),
+						PowerN:                 2,
+						PowerM:                 0,
 						IgnoreComplexConjugate: false,
 						CoefficientPairs: formula.LockedCoefficientPair{
 							Multiplier: 1,
@@ -100,9 +100,9 @@ var _ = Describe("Common formula formats", func() {
 			friezeFormula := formula.FriezeFormula{
 				Terms: []*formula.EulerFormulaTerm{
 					{
-						Scale: complex(1, 0),
-						PowerN: 2,
-						PowerM: 0,
+						Multiplier:             complex(1, 0),
+						PowerN:                 2,
+						PowerM:                 0,
 						IgnoreComplexConjugate: false,
 						CoefficientPairs: formula.LockedCoefficientPair{
 							Multiplier: 1,
@@ -120,9 +120,9 @@ var _ = Describe("Common formula formats", func() {
 			friezeFormula := formula.FriezeFormula{
 				Terms: []*formula.EulerFormulaTerm{
 					{
-						Scale: complex(1, 0),
-						PowerN: 2,
-						PowerM: 0,
+						Multiplier:             complex(1, 0),
+						PowerN:                 2,
+						PowerM:                 0,
 						IgnoreComplexConjugate: false,
 						CoefficientPairs: formula.LockedCoefficientPair{
 							Multiplier: 1,
@@ -140,9 +140,9 @@ var _ = Describe("Common formula formats", func() {
 			friezeFormula := formula.FriezeFormula{
 				Terms: []*formula.EulerFormulaTerm{
 					{
-						Scale: complex(1, 0),
-						PowerN: 2,
-						PowerM: 1,
+						Multiplier:             complex(1, 0),
+						PowerN:                 2,
+						PowerM:                 1,
 						IgnoreComplexConjugate: false,
 						CoefficientPairs: formula.LockedCoefficientPair{
 							Multiplier: 1,
@@ -160,9 +160,9 @@ var _ = Describe("Common formula formats", func() {
 			friezeFormula := formula.FriezeFormula{
 				Terms: []*formula.EulerFormulaTerm{
 					{
-						Scale: complex(1, 0),
-						PowerN: 2,
-						PowerM: 0,
+						Multiplier:             complex(1, 0),
+						PowerN:                 2,
+						PowerM:                 0,
 						IgnoreComplexConjugate: false,
 						CoefficientPairs: formula.LockedCoefficientPair{
 							Multiplier: 1,
@@ -180,9 +180,9 @@ var _ = Describe("Common formula formats", func() {
 			friezeFormula := formula.FriezeFormula{
 				Terms: []*formula.EulerFormulaTerm{
 					{
-						Scale: complex(1, 0),
-						PowerN: 2,
-						PowerM: 0,
+						Multiplier:             complex(1, 0),
+						PowerN:                 2,
+						PowerM:                 0,
 						IgnoreComplexConjugate: false,
 						CoefficientPairs: formula.LockedCoefficientPair{
 							Multiplier: 1,
@@ -202,9 +202,9 @@ var _ = Describe("Common formula formats", func() {
 			friezeFormula := formula.FriezeFormula{
 				Terms: []*formula.EulerFormulaTerm{
 					{
-						Scale: complex(1, 0),
-						PowerN: 2,
-						PowerM: -1,
+						Multiplier:             complex(1, 0),
+						PowerN:                 2,
+						PowerM:                 -1,
 						IgnoreComplexConjugate: false,
 						CoefficientPairs: formula.LockedCoefficientPair{
 							Multiplier: 1,
@@ -224,9 +224,9 @@ var _ = Describe("Common formula formats", func() {
 			friezeFormula := formula.FriezeFormula{
 				Terms: []*formula.EulerFormulaTerm{
 					{
-						Scale: complex(1, 0),
-						PowerN: 2,
-						PowerM: 0,
+						Multiplier:             complex(1, 0),
+						PowerN:                 2,
+						PowerM:                 0,
 						IgnoreComplexConjugate: false,
 						CoefficientPairs: formula.LockedCoefficientPair{
 							Multiplier: 1,
@@ -246,11 +246,11 @@ var _ = Describe("Common formula formats", func() {
 			friezeFormula := formula.FriezeFormula{
 				Terms: []*formula.EulerFormulaTerm{
 					{
-						Scale: complex(1, 0),
-						PowerN: 2,
-						PowerM: 0,
+						Multiplier:             complex(1, 0),
+						PowerN:                 2,
+						PowerM:                 0,
 						IgnoreComplexConjugate: false,
-						CoefficientPairs: formula.LockedCoefficientPair{},
+						CoefficientPairs:       formula.LockedCoefficientPair{},
 					},
 				},
 			}
@@ -261,9 +261,9 @@ var _ = Describe("Common formula formats", func() {
 			friezeFormula := formula.FriezeFormula{
 				Terms: []*formula.EulerFormulaTerm{
 					{
-						Scale: complex(1, 0),
-						PowerN: 2,
-						PowerM: 0,
+						Multiplier:             complex(1, 0),
+						PowerN:                 2,
+						PowerM:                 0,
 						IgnoreComplexConjugate: true,
 						CoefficientPairs: formula.LockedCoefficientPair{
 							Multiplier: 1,
@@ -283,9 +283,9 @@ var _ = Describe("Common formula formats", func() {
 		friezeFormula := formula.FriezeFormula{
 			Terms: []*formula.EulerFormulaTerm{
 				{
-					Scale: complex(2, 0),
-					PowerN: 1,
-					PowerM: 0,
+					Multiplier:             complex(2, 0),
+					PowerN:                 1,
+					PowerM:                 0,
 					IgnoreComplexConjugate: false,
 					CoefficientPairs: formula.LockedCoefficientPair{
 						Multiplier: 1,
@@ -304,5 +304,127 @@ var _ = Describe("Common formula formats", func() {
 		expectedResult := complex(math.Exp(-1), 0) * complex(math.Sqrt(3) * 2, 0)
 		Expect(real(contributionByFirstTerm)).To(BeNumerically("~", real(expectedResult)))
 		Expect(imag(contributionByFirstTerm)).To(BeNumerically("~", imag(expectedResult)))
+	})
+
+	Context("Create Frieze formulas via data stream", func() {
+		It("Can create EulerFormulaTerm from YAML", func() {
+			yamlByteStream := []byte(`
+multiplier:
+  real: -1.0
+  imaginary: 2e-2
+power_n: 12
+power_m: -10
+ignore_complex_conjugate: true
+coefficient_pairs:
+  multiplier: 1
+  relationships:
+  - -M-N
+  - +M+NF
+`)
+			eulerExponentialFormulaTerm, err := formula.NewEulerFormulaTermFromYAML(yamlByteStream)
+			Expect(err).To(BeNil())
+			Expect(real(eulerExponentialFormulaTerm.Multiplier)).To(BeNumerically("~", -1.0))
+			Expect(imag(eulerExponentialFormulaTerm.Multiplier)).To(BeNumerically("~", 2e-2))
+			Expect(eulerExponentialFormulaTerm.PowerN).To(Equal(12))
+			Expect(eulerExponentialFormulaTerm.PowerM).To(Equal(-10))
+			Expect(eulerExponentialFormulaTerm.IgnoreComplexConjugate).To(BeTrue())
+			Expect(eulerExponentialFormulaTerm.CoefficientPairs.Multiplier).To(BeNumerically("~", 1))
+			Expect(eulerExponentialFormulaTerm.CoefficientPairs.OtherCoefficientRelationships).To(HaveLen(2))
+			Expect(eulerExponentialFormulaTerm.CoefficientPairs.OtherCoefficientRelationships[0]).To(Equal(formula.CoefficientRelationship(formula.MinusMMinusN)))
+			Expect(eulerExponentialFormulaTerm.CoefficientPairs.OtherCoefficientRelationships[1]).To(Equal(formula.CoefficientRelationship(formula.PlusMPlusNMaybeFlipScale)))
+		})
+		It("Can create EulerFormulaTerm from JSON", func() {
+			jsonByteStream := []byte(`{
+				"multiplier": {
+					"real": -1.0,
+					"imaginary": 2e-2
+				},
+				"power_n": 12,
+				"power_m": -10,
+				"ignore_complex_conjugate": true,
+				"coefficient_pairs": {
+				  "multiplier": 1,
+				  "relationships": ["-M-N", "+M+NF"]
+				}
+			}`)
+			eulerExponentialFormulaTerm, err := formula.NewEulerFormulaTermFromJSON(jsonByteStream)
+			Expect(err).To(BeNil())
+			Expect(real(eulerExponentialFormulaTerm.Multiplier)).To(BeNumerically("~", -1.0))
+			Expect(imag(eulerExponentialFormulaTerm.Multiplier)).To(BeNumerically("~", 2e-2))
+			Expect(eulerExponentialFormulaTerm.PowerN).To(Equal(12))
+			Expect(eulerExponentialFormulaTerm.PowerM).To(Equal(-10))
+			Expect(eulerExponentialFormulaTerm.IgnoreComplexConjugate).To(BeTrue())
+			Expect(eulerExponentialFormulaTerm.CoefficientPairs.Multiplier).To(BeNumerically("~", 1))
+			Expect(eulerExponentialFormulaTerm.CoefficientPairs.OtherCoefficientRelationships).To(HaveLen(2))
+			Expect(eulerExponentialFormulaTerm.CoefficientPairs.OtherCoefficientRelationships[0]).To(Equal(formula.CoefficientRelationship(formula.MinusMMinusN)))
+			Expect(eulerExponentialFormulaTerm.CoefficientPairs.OtherCoefficientRelationships[1]).To(Equal(formula.CoefficientRelationship(formula.PlusMPlusNMaybeFlipScale)))
+		})
+		It("Can create Frieze Formulas from YAML", func() {
+			yamlByteStream := []byte(`terms:
+  -
+    multiplier:
+      real: -1.0
+      imaginary: 2e-2
+    power_n: 3
+    power_m: 0
+    coefficient_pairs:
+      multiplier: 1
+      relationships:
+      - -M-N
+      - "+M+NF"
+  -
+    multiplier:
+      real: 1e-10
+      imaginary: 0
+    power_n: 1
+    power_m: 1
+    coefficient_pairs:
+      multiplier: 1
+      relationships:
+      - -M-NF
+`)
+			rosetteFormula, err := formula.NewFriezeFormulaFromYAML(yamlByteStream)
+			Expect(err).To(BeNil())
+			Expect(rosetteFormula.Terms).To(HaveLen(2))
+			Expect(rosetteFormula.Terms[0].PowerN).To(Equal(3))
+			Expect(rosetteFormula.Terms[0].IgnoreComplexConjugate).To(BeFalse())
+			Expect(rosetteFormula.Terms[1].CoefficientPairs.OtherCoefficientRelationships[0]).To(Equal(formula.CoefficientRelationship(formula.MinusMMinusNMaybeFlipScale)))
+		})
+	})
+	It("Can create Frieze Formulas from JSON", func() {
+		jsonByteStream := []byte(`{
+				"terms": [
+					{
+						"multiplier": {
+							"real": -1.0,
+							"imaginary": 2e-2
+						},
+						"power_n": 3,
+						"power_m": 0,
+						"coefficient_pairs": {
+						  "multiplier": 1,
+						  "relationships": ["-M-N", "+M+NF"]
+						}
+					},
+					{
+						"multiplier": {
+							"real": 1e-10,
+							"imaginary": 0
+						},
+						"power_n": 1,
+						"power_m": 1,
+						"coefficient_pairs": {
+						  "multiplier": 1,
+						  "relationships": ["-M-NF"]
+						}
+					}
+				]
+			}`)
+		rosetteFormula, err := formula.NewFriezeFormulaFromJSON(jsonByteStream)
+		Expect(err).To(BeNil())
+		Expect(rosetteFormula.Terms).To(HaveLen(2))
+		Expect(rosetteFormula.Terms[0].PowerN).To(Equal(3))
+		Expect(rosetteFormula.Terms[0].IgnoreComplexConjugate).To(BeFalse())
+		Expect(rosetteFormula.Terms[1].CoefficientPairs.OtherCoefficientRelationships[0]).To(Equal(formula.CoefficientRelationship(formula.MinusMMinusNMaybeFlipScale)))
 	})
 })

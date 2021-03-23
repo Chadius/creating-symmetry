@@ -1,6 +1,11 @@
 package formula
 
-import "math/cmplx"
+import (
+	"encoding/json"
+	"gopkg.in/yaml.v2"
+	"math/cmplx"
+	"wallpaper/entities/utility"
+)
 
 // FriezeFormula is used to generate frieze patterns.
 type FriezeFormula struct {
@@ -93,26 +98,68 @@ func (formula FriezeFormula) AnalyzeForSymmetry() *FriezeSymmetry {
 	return symmetriesFound
 }
 
+type eulerFormulaTermMarshalable struct {
+	Multiplier				utility.ComplexNumberForMarshal	`json:"multiplier" yaml:"multiplier"`
+	PowerN					int								`json:"power_n" yaml:"power_n"`
+	PowerM					int								`json:"power_m" yaml:"power_m"`
+	IgnoreComplexConjugate	bool							`json:"ignore_complex_conjugate" yaml:"ignore_complex_conjugate"`
+	CoefficientPairs		LockedCoefficientPair			`json:"coefficient_pairs" yaml:"coefficient_pairs"`
+}
+
 // EulerFormulaTerm calculates e^(i*n*z) * e^(-i*m*zConj)
 type EulerFormulaTerm struct {
-	Scale                  complex128
-	PowerN                 int
-	PowerM                 int
+	Multiplier				complex128
+	PowerN					int
+	PowerM					int
 	// IgnoreComplexConjugate will make sure zConjugate is not used in this calculation
 	//    (effectively setting it to 1 + 0i)
-	IgnoreComplexConjugate bool
+	IgnoreComplexConjugate	bool
 	// CoefficientPairs will create similar terms to add to this one when calculating.
 	//    This is useful when trying to force symmetry by adding another term with swapped
 	//    PowerN & PowerM, or multiplying by -1.
-	CoefficientPairs LockedCoefficientPair
+	CoefficientPairs		LockedCoefficientPair
+}
+
+// NewEulerExponentialFormulaTermFromYAML reads the data and returns a formula term from it.
+func NewEulerFormulaTermFromYAML(data []byte) (*EulerFormulaTerm, error) {
+	return newEulerFormulaTermFromDatastream(data, yaml.Unmarshal)
+}
+
+// NewEulerExponentialFormulaTermFromJSON reads the data and returns a formula term from it.
+func NewEulerFormulaTermFromJSON(data []byte) (*EulerFormulaTerm, error) {
+	return newEulerFormulaTermFromDatastream(data, json.Unmarshal)
+}
+
+//newEulerFormulaTermFromDatastream consumes a given bytestream and tries to create a new object from it.
+func newEulerFormulaTermFromDatastream(data []byte, unmarshal utility.UnmarshalFunc) (*EulerFormulaTerm, error) {
+	var unmarshalError error
+	var formulaTermMarshal eulerFormulaTermMarshalable
+	unmarshalError = unmarshal(data, &formulaTermMarshal)
+
+	if unmarshalError != nil {
+		return nil, unmarshalError
+	}
+
+	formulaTerm := newEulerFormulaTermFromMarshalObject(formulaTermMarshal)
+	return formulaTerm, nil
+}
+
+func newEulerFormulaTermFromMarshalObject(marshalObject eulerFormulaTermMarshalable) *EulerFormulaTerm {
+	return &EulerFormulaTerm{
+		Multiplier:             complex(marshalObject.Multiplier.Real, marshalObject.Multiplier.Imaginary),
+		PowerN:                 marshalObject.PowerN,
+		PowerM:                 marshalObject.PowerM,
+		IgnoreComplexConjugate: marshalObject.IgnoreComplexConjugate,
+		CoefficientPairs:       marshalObject.CoefficientPairs,
+	}
 }
 
 // Calculate returns the result of using the formula on the given complex number.
 func (term EulerFormulaTerm) Calculate(z complex128) complex128 {
-	sum := CalculateEulerTerm(z, term.PowerN, term.PowerM, term.Scale, term.IgnoreComplexConjugate)
+	sum := CalculateEulerTerm(z, term.PowerN, term.PowerM, term.Multiplier, term.IgnoreComplexConjugate)
 
 	for _, relationship := range term.CoefficientPairs.OtherCoefficientRelationships {
-		power1, power2, scale := SetCoefficientsBasedOnRelationship(term.PowerN, term.PowerM, term.Scale, relationship)
+		power1, power2, scale := SetCoefficientsBasedOnRelationship(term.PowerN, term.PowerM, term.Multiplier, relationship)
 		relationshipScale := scale * complex(term.CoefficientPairs.Multiplier, 0)
 		sum += CalculateEulerTerm(z, power1, power2, relationshipScale, term.IgnoreComplexConjugate)
 	}
@@ -139,4 +186,41 @@ func coefficientPairsIncludes (relationships []CoefficientRelationship, relation
 		}
 	}
 	return false
+}
+
+// NewFriezeFormulaFromYAML reads the data and returns a Frieze formula from it.
+func NewFriezeFormulaFromYAML(data []byte) (*FriezeFormula, error) {
+	return newFriezeFormulaFromDatastream(data, yaml.Unmarshal)
+}
+
+// NewFriezeFormulaFromJSON reads the data and returns a Frieze formula from it.
+func NewFriezeFormulaFromJSON(data []byte) (*FriezeFormula, error) {
+	return newFriezeFormulaFromDatastream(data, yaml.Unmarshal)
+}
+
+type friezeFormulaMarshalable struct {
+	Terms []*eulerFormulaTermMarshalable
+}
+
+// newFriezeFormulaFromDatastream consumes a given bytestream and tries to create a new object from it.
+func newFriezeFormulaFromDatastream(data []byte, unmarshal utility.UnmarshalFunc) (*FriezeFormula, error) {
+	var unmarshalError error
+	var friezeFormulaMarshal friezeFormulaMarshalable
+	unmarshalError = unmarshal(data, &friezeFormulaMarshal)
+
+	if unmarshalError != nil {
+		return nil, unmarshalError
+	}
+
+	friezeFormula := newFriezeFormulaFromMarshalObject(friezeFormulaMarshal)
+	return friezeFormula, nil
+}
+
+func newFriezeFormulaFromMarshalObject(marshalObject friezeFormulaMarshalable) *FriezeFormula {
+	terms := []*EulerFormulaTerm{}
+	for _, termMarshal := range marshalObject.Terms {
+		newTerm := newEulerFormulaTermFromMarshalObject(*termMarshal)
+		terms = append(terms, newTerm)
+	}
+	return &FriezeFormula{Terms: terms}
 }
