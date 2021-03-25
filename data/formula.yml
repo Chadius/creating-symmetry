@@ -1,43 +1,59 @@
-terms:
-  -
-    multiplier:
-      real: 1
-      imaginary: 0
-    power_n: 12
-    power_m: 0
-    ignore_complex_conjugate: true
-  -
-    multiplier:
-      real: 1
-      imaginary: 0
-    power_n: -12
-    power_m: 0
-    ignore_complex_conjugate: true
-  -
-    multiplier:
-      real: 1e2
-      imaginary: 0
-    power_n: 8
-    power_m: 0
-    ignore_complex_conjugate: true
-  -
-    multiplier:
-      real: 1e2
-      imaginary: 0
-    power_n: -8
-    power_m: 0
-    ignore_complex_conjugate: true
-  -
-    multiplier:
-      real: 1e4
-      imaginary: 0
-    power_n: 6
-    power_m: 0
-    ignore_complex_conjugate: true
-  -
-    multiplier:
-      real: 1e4
-      imaginary: 0
-    power_n: -6
-    power_m: 0
-    ignore_complex_conjugate: true
+sample_source_filename: exampleImage/brownie.png
+output_filename: exampleImage/newBrownie.png
+output_size:
+  width: 800
+  height: 600
+sample_space:
+  minx: -1e0
+  miny: -1e0
+  maxx: 1e0
+  maxy: 1e0
+color_value_space:
+  minx: -2e5
+  miny: -2e5
+  maxx: 5e5
+  maxy: 5e5
+rosette_formula:
+  terms:
+    -
+      multiplier:
+        real: 1
+        imaginary: 0
+      power_n: 12
+      power_m: 0
+      ignore_complex_conjugate: true
+    -
+      multiplier:
+        real: 1
+        imaginary: 0
+      power_n: -12
+      power_m: 0
+      ignore_complex_conjugate: true
+    -
+      multiplier:
+        real: 1e2
+        imaginary: 0
+      power_n: 8
+      power_m: 0
+      ignore_complex_conjugate: true
+    -
+      multiplier:
+        real: 1e2
+        imaginary: 0
+      power_n: -8
+      power_m: 0
+      ignore_complex_conjugate: true
+    -
+      multiplier:
+        real: 1e4
+        imaginary: 0
+      power_n: 6
+      power_m: 0
+      ignore_complex_conjugate: true
+    -
+      multiplier:
+        real: 1e4
+        imaginary: 0
+      power_n: -6
+      power_m: 0
+      ignore_complex_conjugate: true

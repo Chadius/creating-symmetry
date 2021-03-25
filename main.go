@@ -1,11 +1,14 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"image"
 	"image/color"
 	"image/png"
+	"io/ioutil"
 	"log"
+	"wallpaper/entities/command"
 	"wallpaper/entities/formula"
 
 	//"image/png"
@@ -15,16 +18,33 @@ import (
 )
 
 func main() {
-	sampleSpaceMin := complex(-1e0, -1e0)
-	sampleSpaceMax := complex(1e0, 1e0)
-	//outputWidth := 800
-	//outputHeight := 450
-	outputWidth := 3840
-	outputHeight := 2160
-	colorSourceFilename := "exampleImage/brownie.png"
-	outputFilename := "exampleImage/newBrownie.png"
-	colorValueBoundMin := complex(-2e5, -2e5)
-	colorValueBoundMax := complex(5e5, 5e5)
+	createWallpaperYAML, err := ioutil.ReadFile("data/formula.yml")
+	if err != nil {
+		log.Fatal(err)
+	}
+	wallpaperCommand, err := command.NewCreateWallpaperCommandFromYAML(createWallpaperYAML)
+	if err != nil {
+		log.Fatal(err)
+	}
+	sampleSpaceMin := complex(wallpaperCommand.SampleSpace.MinX, wallpaperCommand.SampleSpace.MinY)
+	sampleSpaceMax := complex(wallpaperCommand.SampleSpace.MaxX, wallpaperCommand.SampleSpace.MaxY)
+	outputWidth := wallpaperCommand.OutputImageSize.Width
+	outputHeight := wallpaperCommand.OutputImageSize.Height
+	colorSourceFilename := wallpaperCommand.SampleSourceFilename
+	outputFilename := wallpaperCommand.OutputFilename
+	colorValueBoundMin := complex(wallpaperCommand.ColorValueSpace.MinX, wallpaperCommand.ColorValueSpace.MinY)
+	colorValueBoundMax := complex(wallpaperCommand.ColorValueSpace.MaxX, wallpaperCommand.ColorValueSpace.MaxY)
+
+	//sampleSpaceMin := complex(-1e0, -1e0)
+	//sampleSpaceMax := complex(1e0, 1e0)
+	////outputWidth := 800
+	////outputHeight := 450
+	//outputWidth := 3840
+	//outputHeight := 2160
+	//colorSourceFilename := "exampleImage/brownie.png"
+	//outputFilename := "exampleImage/newBrownie.png"
+	//colorValueBoundMin := complex(-2e5, -2e5)
+	//colorValueBoundMax := complex(5e5, 5e5)
 
 	reader, err := os.Open(colorSourceFilename)
 	if err != nil {
@@ -48,7 +68,7 @@ func main() {
 	)
 
 	//transformedCoordinates := transformCoordinatesForFriezeFormula(scaledCoordinates)
-	transformedCoordinates := transformCoordinatesForRosetteFormula(scaledCoordinates)
+	transformedCoordinates := transformCoordinatesForFormula(wallpaperCommand, scaledCoordinates)
 	minz, maxz := mathutility.GetBoundingBox(transformedCoordinates)
 	println(minz)
 	println(maxz)
@@ -69,40 +89,18 @@ func outputToFile(outputFilename string, outputImage image.Image) {
 	png.Encode(outputImageFile, outputImage)
 }
 
-func transformCoordinatesForFriezeFormula(scaledCoordinates []complex128) []complex128 {
-	friezeFormula := formula.FriezeFormula{
-		Terms: []*formula.EulerFormulaTerm{
-			{
-				Multiplier:             complex(1e0, 0e2),
-				PowerN:                 6,
-				PowerM:                 0,
-				IgnoreComplexConjugate: true,
-				CoefficientPairs:       formula.LockedCoefficientPair{},
-			},
-			{
-				Multiplier:             complex(1e0, 0e2),
-				PowerN:                 -6,
-				PowerM:                 0,
-				IgnoreComplexConjugate: true,
-				CoefficientPairs:       formula.LockedCoefficientPair{},
-			},
-			{
-				Multiplier:             complex(1e0, 0e2),
-				PowerN:                 12,
-				PowerM:                 0,
-				IgnoreComplexConjugate: true,
-				CoefficientPairs:       formula.LockedCoefficientPair{},
-			},
-			{
-				Multiplier:             complex(1e0, 0e2),
-				PowerN:                 -12,
-				PowerM:                 0,
-				IgnoreComplexConjugate: true,
-				CoefficientPairs:       formula.LockedCoefficientPair{},
-			},
-		},
+func transformCoordinatesForFormula(command *command.CreateWallpaperCommand, scaledCoordinates []complex128) []complex128 {
+	if command.FriezeFormula != nil {
+		return transformCoordinatesForFriezeFormula(command.FriezeFormula, scaledCoordinates)
 	}
+	if command.RosetteFormula != nil {
+		return transformCoordinatesForRosetteFormula(command.RosetteFormula, scaledCoordinates)
+	}
+	log.Fatal(errors.New("No formula found"))
+	return []complex128{}
+}
 
+func transformCoordinatesForFriezeFormula(friezeFormula *formula.FriezeFormula, scaledCoordinates []complex128) []complex128 {
 	symmetryAnalysis := friezeFormula.AnalyzeForSymmetry()
 	if symmetryAnalysis.P111 {
 		println("Has these symmetries: p111")
@@ -150,54 +148,7 @@ func transformCoordinatesForFriezeFormula(scaledCoordinates []complex128) []comp
 	return transformedCoordinates
 }
 
-func transformCoordinatesForRosetteFormula(scaledCoordinates []complex128) []complex128 {
-	rosetteFormula := formula.RosetteFormula{
-		Terms: []*formula.ZExponentialFormulaTerm{
-			{
-				Multiplier:             complex(1e0, 0e2),
-				PowerN:                 12,
-				PowerM:                 0,
-				IgnoreComplexConjugate: true,
-				CoefficientPairs:       formula.LockedCoefficientPair{},
-			},
-			{
-				Multiplier:             complex(1e0, 0e2),
-				PowerN:                 -12,
-				PowerM:                 0,
-				IgnoreComplexConjugate: true,
-				CoefficientPairs:       formula.LockedCoefficientPair{},
-			},
-			{
-				Multiplier:             complex(1e2, 0e2),
-				PowerN:                 8,
-				PowerM:                 0,
-				IgnoreComplexConjugate: true,
-				CoefficientPairs:       formula.LockedCoefficientPair{},
-			},
-			{
-				Multiplier:             complex(1e2, 0e2),
-				PowerN:                 -8,
-				PowerM:                 0,
-				IgnoreComplexConjugate: true,
-				CoefficientPairs:       formula.LockedCoefficientPair{},
-			},
-			{
-				Multiplier:             complex(1e4, 0e2),
-				PowerN:                 6,
-				PowerM:                 0,
-				IgnoreComplexConjugate: true,
-				CoefficientPairs:       formula.LockedCoefficientPair{},
-			},
-			{
-				Multiplier:             complex(1e4, 0e2),
-				PowerN:                 -6,
-				PowerM:                 0,
-				IgnoreComplexConjugate: true,
-				CoefficientPairs:       formula.LockedCoefficientPair{},
-			},
-		},
-	}
-
+func transformCoordinatesForRosetteFormula(rosetteFormula *formula.RosetteFormula, scaledCoordinates []complex128) []complex128 {
 	transformedCoordinates := []complex128{}
 	resultsByTerm := [][]complex128{}
 	for range rosetteFormula.Terms {

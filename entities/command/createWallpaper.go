@@ -29,6 +29,7 @@ type CreateWallpaperCommand struct {
 	OutputFilename			string					`json:"output_filename" yaml:"output_filename"`
 	ColorValueSpace			ComplexNumberCorners	`json:"color_value_space" yaml:"color_value_space"`
 	RosetteFormula			*formula.RosetteFormula	`json:"rosette_formula" yaml:"rosette_formula"`
+	FriezeFormula			*formula.FriezeFormula	`json:"frieze_formula" yaml:"frieze_formula"`
 }
 
 // CreateWallpaperCommandMarshal can be marshaled and converted to a CreateWallpaperCommand
@@ -39,6 +40,7 @@ type CreateWallpaperCommandMarshal struct {
 	OutputFilename			string								`json:"output_filename" yaml:"output_filename"`
 	ColorValueSpace			ComplexNumberCorners				`json:"color_value_space" yaml:"color_value_space"`
 	RosetteFormula			*formula.RosetteFormulaMarshalable	`json:"rosette_formula" yaml:"rosette_formula"`
+	FriezeFormula			*formula.FriezeFormulaMarshalable	`json:"frieze_formula" yaml:"frieze_formula"`
 }
 
 // NewCreateWallpaperCommandFromYAML reads the data and returns a CreateWallpaperCommand from it.
@@ -71,6 +73,10 @@ func newCreateWallpaperCommandFromDatastream(data []byte, unmarshal utility.Unma
 
 	if commandToCreateMarshal.RosetteFormula != nil {
 		commandToCreate.RosetteFormula  = formula.NewRosetteFormulaFromMarshalObject(*commandToCreateMarshal.RosetteFormula)
+	}
+
+	if commandToCreateMarshal.FriezeFormula != nil {
+		commandToCreate.FriezeFormula  = formula.NewFriezeFormulaFromMarshalObject(*commandToCreateMarshal.FriezeFormula)
 	}
 
 	return commandToCreate, nil

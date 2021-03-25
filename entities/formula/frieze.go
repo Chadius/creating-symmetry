@@ -198,25 +198,27 @@ func NewFriezeFormulaFromJSON(data []byte) (*FriezeFormula, error) {
 	return newFriezeFormulaFromDatastream(data, yaml.Unmarshal)
 }
 
-type friezeFormulaMarshalable struct {
+// FriezeFormulaMarshalable can be marshaled and can be converted into a FriezeFormula.
+type FriezeFormulaMarshalable struct {
 	Terms []*eulerFormulaTermMarshalable
 }
 
 // newFriezeFormulaFromDatastream consumes a given bytestream and tries to create a new object from it.
 func newFriezeFormulaFromDatastream(data []byte, unmarshal utility.UnmarshalFunc) (*FriezeFormula, error) {
 	var unmarshalError error
-	var friezeFormulaMarshal friezeFormulaMarshalable
+	var friezeFormulaMarshal FriezeFormulaMarshalable
 	unmarshalError = unmarshal(data, &friezeFormulaMarshal)
 
 	if unmarshalError != nil {
 		return nil, unmarshalError
 	}
 
-	friezeFormula := newFriezeFormulaFromMarshalObject(friezeFormulaMarshal)
+	friezeFormula := NewFriezeFormulaFromMarshalObject(friezeFormulaMarshal)
 	return friezeFormula, nil
 }
 
-func newFriezeFormulaFromMarshalObject(marshalObject friezeFormulaMarshalable) *FriezeFormula {
+// NewFriezeFormulaFromMarshalObject converts the marshaled object into a FriezeFormula.
+func NewFriezeFormulaFromMarshalObject(marshalObject FriezeFormulaMarshalable) *FriezeFormula {
 	terms := []*EulerFormulaTerm{}
 	for _, termMarshal := range marshalObject.Terms {
 		newTerm := newEulerFormulaTermFromMarshalObject(*termMarshal)
