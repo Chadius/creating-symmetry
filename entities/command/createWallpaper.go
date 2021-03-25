@@ -3,6 +3,7 @@ package command
 import (
 	"encoding/json"
 	"gopkg.in/yaml.v2"
+	"wallpaper/entities/formula"
 	"wallpaper/entities/utility"
 )
 
@@ -27,6 +28,17 @@ type CreateWallpaperCommand struct {
 	SampleSourceFilename	string					`json:"sample_source_filename" yaml:"sample_source_filename"`
 	OutputFilename			string					`json:"output_filename" yaml:"output_filename"`
 	ColorValueSpace			ComplexNumberCorners	`json:"color_value_space" yaml:"color_value_space"`
+	RosetteFormula			*formula.RosetteFormula	`json:"rosette_formula" yaml:"rosette_formula"`
+}
+
+// CreateWallpaperCommandMarshal can be marshaled and converted to a CreateWallpaperCommand
+type CreateWallpaperCommandMarshal struct {
+	SampleSpace				ComplexNumberCorners				`json:"sample_space" yaml:"sample_space"`
+	OutputImageSize			WidthHeightDimensions				`json:"output_size" yaml:"output_size"`
+	SampleSourceFilename	string								`json:"sample_source_filename" yaml:"sample_source_filename"`
+	OutputFilename			string								`json:"output_filename" yaml:"output_filename"`
+	ColorValueSpace			ComplexNumberCorners				`json:"color_value_space" yaml:"color_value_space"`
+	RosetteFormula			*formula.RosetteFormulaMarshalable	`json:"rosette_formula" yaml:"rosette_formula"`
 }
 
 // NewCreateWallpaperCommandFromYAML reads the data and returns a CreateWallpaperCommand from it.
@@ -42,11 +54,24 @@ func NewCreateWallpaperCommandFromJSON(data []byte) (*CreateWallpaperCommand, er
 // newCreateWallpaperCommandFromDatastream consumes a given bytestream and tries to create a new object from it.
 func newCreateWallpaperCommandFromDatastream(data []byte, unmarshal utility.UnmarshalFunc) (*CreateWallpaperCommand, error) {
 	var unmarshalError error
-	var commandToCreate CreateWallpaperCommand
-	unmarshalError = unmarshal(data, &commandToCreate)
+	var commandToCreateMarshal CreateWallpaperCommandMarshal
+	unmarshalError = unmarshal(data, &commandToCreateMarshal)
 
 	if unmarshalError != nil {
 		return nil, unmarshalError
 	}
-	return &commandToCreate, nil
+
+	commandToCreate := &CreateWallpaperCommand{
+		SampleSpace:          commandToCreateMarshal.SampleSpace,
+		OutputImageSize:      commandToCreateMarshal.OutputImageSize,
+		SampleSourceFilename: commandToCreateMarshal.SampleSourceFilename,
+		OutputFilename:       commandToCreateMarshal.OutputFilename,
+		ColorValueSpace:      commandToCreateMarshal.ColorValueSpace,
+	}
+
+	if commandToCreateMarshal.RosetteFormula != nil {
+		commandToCreate.RosetteFormula  = formula.NewRosetteFormulaFromMarshalObject(*commandToCreateMarshal.RosetteFormula)
+	}
+
+	return commandToCreate, nil
 }

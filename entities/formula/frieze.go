@@ -120,12 +120,12 @@ type EulerFormulaTerm struct {
 	CoefficientPairs		LockedCoefficientPair
 }
 
-// NewEulerExponentialFormulaTermFromYAML reads the data and returns a formula term from it.
+// NewEulerFormulaTermFromYAML reads the data and returns a formula term from it.
 func NewEulerFormulaTermFromYAML(data []byte) (*EulerFormulaTerm, error) {
 	return newEulerFormulaTermFromDatastream(data, yaml.Unmarshal)
 }
 
-// NewEulerExponentialFormulaTermFromJSON reads the data and returns a formula term from it.
+// NewEulerFormulaTermFromJSON reads the data and returns a formula term from it.
 func NewEulerFormulaTermFromJSON(data []byte) (*EulerFormulaTerm, error) {
 	return newEulerFormulaTermFromDatastream(data, json.Unmarshal)
 }

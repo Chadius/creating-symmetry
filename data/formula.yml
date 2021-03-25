@@ -1,0 +1,43 @@
+terms:
+  -
+    multiplier:
+      real: 1
+      imaginary: 0
+    power_n: 12
+    power_m: 0
+    ignore_complex_conjugate: true
+  -
+    multiplier:
+      real: 1
+      imaginary: 0
+    power_n: -12
+    power_m: 0
+    ignore_complex_conjugate: true
+  -
+    multiplier:
+      real: 1e2
+      imaginary: 0
+    power_n: 8
+    power_m: 0
+    ignore_complex_conjugate: true
+  -
+    multiplier:
+      real: 1e2
+      imaginary: 0
+    power_n: -8
+    power_m: 0
+    ignore_complex_conjugate: true
+  -
+    multiplier:
+      real: 1e4
+      imaginary: 0
+    power_n: 6
+    power_m: 0
+    ignore_complex_conjugate: true
+  -
+    multiplier:
+      real: 1e4
+      imaginary: 0
+    power_n: -6
+    power_m: 0
+    ignore_complex_conjugate: true

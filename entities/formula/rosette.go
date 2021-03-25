@@ -7,7 +7,8 @@ import (
 	"wallpaper/entities/utility"
 )
 
-type zExponentialFormulaTermMarshalable struct {
+// ZExponentialFormulaTermMarshalable can be marshaled and converted to a ZExponentialFormulaTerm
+type ZExponentialFormulaTermMarshalable struct {
 	Multiplier				utility.ComplexNumberForMarshal	`json:"multiplier" yaml:"multiplier"`
 	PowerN					int								`json:"power_n" yaml:"power_n"`
 	PowerM					int								`json:"power_m" yaml:"power_m"`
@@ -42,7 +43,7 @@ func NewZExponentialFormulaTermFromJSON(data []byte) (*ZExponentialFormulaTerm, 
 // newZExponentialFormulaTermFromDatastream consumes a given bytestream and tries to create a new object from it.
 func newZExponentialFormulaTermFromDatastream(data []byte, unmarshal utility.UnmarshalFunc) (*ZExponentialFormulaTerm, error) {
 	var unmarshalError error
-	var formulaTermMarshal zExponentialFormulaTermMarshalable
+	var formulaTermMarshal ZExponentialFormulaTermMarshalable
 	unmarshalError = unmarshal(data, &formulaTermMarshal)
 
 	if unmarshalError != nil {
@@ -53,7 +54,7 @@ func newZExponentialFormulaTermFromDatastream(data []byte, unmarshal utility.Unm
 	return formulaTerm, nil
 }
 
-func newZExponentialFormulaTermFromMarshalObject(marshalObject zExponentialFormulaTermMarshalable) *ZExponentialFormulaTerm {
+func newZExponentialFormulaTermFromMarshalObject(marshalObject ZExponentialFormulaTermMarshalable) *ZExponentialFormulaTerm {
 	return &ZExponentialFormulaTerm{
 		Multiplier:             complex(marshalObject.Multiplier.Real, marshalObject.Multiplier.Imaginary),
 		PowerN:                 marshalObject.PowerN,
@@ -209,25 +210,27 @@ func NewRosetteFormulaFromJSON(data []byte) (*RosetteFormula, error) {
 	return newRosetteFormulaFromDatastream(data, json.Unmarshal)
 }
 
-type rosetteFormulaMarshalable struct {
-	Terms []*zExponentialFormulaTermMarshalable
+// RosetteFormulaMarshalable can be marshaled and mapped to a RosetteFormula object.
+type RosetteFormulaMarshalable struct {
+	Terms []*ZExponentialFormulaTermMarshalable
 }
 
 // newRosetteFormulaFromDatastream consumes a given bytestream and tries to create a new object from it.
 func newRosetteFormulaFromDatastream(data []byte, unmarshal utility.UnmarshalFunc) (*RosetteFormula, error) {
 	var unmarshalError error
-	var rosetteFormulaMarshal rosetteFormulaMarshalable
+	var rosetteFormulaMarshal RosetteFormulaMarshalable
 	unmarshalError = unmarshal(data, &rosetteFormulaMarshal)
 
 	if unmarshalError != nil {
 		return nil, unmarshalError
 	}
 
-	rosetteFormula := newRosetteFormulaFromMarshalObject(rosetteFormulaMarshal)
+	rosetteFormula := NewRosetteFormulaFromMarshalObject(rosetteFormulaMarshal)
 	return rosetteFormula, nil
 }
 
-func newRosetteFormulaFromMarshalObject(marshalObject rosetteFormulaMarshalable) *RosetteFormula {
+// NewRosetteFormulaFromMarshalObject converts the marshalled object to a usable one.
+func NewRosetteFormulaFromMarshalObject(marshalObject RosetteFormulaMarshalable) *RosetteFormula {
 	terms := []*ZExponentialFormulaTerm{}
 	for _, termMarshal := range marshalObject.Terms {
 		newTerm := newZExponentialFormulaTermFromMarshalObject(*termMarshal)
