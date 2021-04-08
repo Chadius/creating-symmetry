@@ -2,7 +2,7 @@ package utility
 
 import (
 	"fmt"
-	. "gopkg.in/check.v1"
+	"gopkg.in/check.v1"
 	"math"
 	"reflect"
 )
@@ -11,8 +11,8 @@ import (
 type NumericallyCloseEnough struct {}
 
 // Info returns information for the NumericallyCloseEnough
-func (checker NumericallyCloseEnough) Info() *CheckerInfo {
-	return &CheckerInfo{Name: "NumericallyCloseEnough", Params: []string{"obtained", "expected", "tolerance"}}
+func (checker NumericallyCloseEnough) Info() *check.CheckerInfo {
+	return &check.CheckerInfo{Name: "NumericallyCloseEnough", Params: []string{"obtained", "expected", "tolerance"}}
 }
 
 // Check to see if the obtained and expected are within tolerance.
