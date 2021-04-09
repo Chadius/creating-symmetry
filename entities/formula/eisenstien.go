@@ -50,3 +50,27 @@ func(term EisensteinFormulaTerm)Validate() error {
 func(term EisensteinFormulaTerm)Calculate(z complex128) complex128 {
 	return complex(0,0)
 }
+
+// ConvertToLatticeCoordinates converts a point from cartesian coordinates to the lattice coordinates
+func (term EisensteinFormulaTerm) ConvertToLatticeCoordinates(cartesianPoint complex128) complex128 {
+
+	vector1 := term.XLatticeVector
+	vector2 := term.YLatticeVector
+	swapVectorsDuringCalculation := real(vector1) < 1e-6
+
+	if swapVectorsDuringCalculation == true {
+		vector1 = term.YLatticeVector
+		vector2 = term.XLatticeVector
+	}
+
+	scalarForVector2 := (imag(cartesianPoint) - (real(cartesianPoint) * imag(vector1))) /
+		((real(vector1) * imag(vector2)) - (imag(vector1) * real(vector2)))
+
+	scalarForVector1 := (real(cartesianPoint) - (scalarForVector2 * real(vector2)))/ real(vector1)
+
+	if swapVectorsDuringCalculation {
+		return complex(scalarForVector2, scalarForVector1)
+	}
+
+	return complex(scalarForVector1, scalarForVector2)
+}
