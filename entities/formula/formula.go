@@ -47,6 +47,6 @@ func newLockedCoefficientPairFromDatastream(data []byte, unmarshal utility.Unmar
 
 // CalculationResultForFormula shows the results of a calculation
 type CalculationResultForFormula struct {
-	Total                 complex128
-	ContributionByTerm []complex128
+	Total				complex128
+	ContributionByTerm	[]complex128
 }
