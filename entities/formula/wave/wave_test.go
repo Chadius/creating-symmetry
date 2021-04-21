@@ -13,15 +13,13 @@ import (
 func Test(t *testing.T) { TestingT(t) }
 
 type WaveFormulaTests struct {
+	hexagonalWavePacket *wave.Formula
 }
 
 var _ = Suite(&WaveFormulaTests{})
 
 func (suite *WaveFormulaTests) SetUpTest(checker *C) {
-}
-
-func (suite *WaveFormulaTests) TestWaveFormulaCombinesEisensteinTerms(checker *C) {
-	waveFormula := &wave.Formula{
+	suite.hexagonalWavePacket = &wave.Formula{
 		Terms: []*formula.EisensteinFormulaTerm{
 			{
 				XLatticeVector: complex(1,0),
@@ -42,8 +40,12 @@ func (suite *WaveFormulaTests) TestWaveFormulaCombinesEisensteinTerms(checker *C
 				PowerM:         1,
 			},
 		},
+		Multiplier: complex(1, 0),
 	}
-	calculation := waveFormula.Calculate(complex(math.Sqrt(3), -1 * math.Sqrt(3)))
+}
+
+func (suite *WaveFormulaTests) TestWaveFormulaCombinesEisensteinTerms(checker *C) {
+	calculation := suite.hexagonalWavePacket.Calculate(complex(math.Sqrt(3), -1 * math.Sqrt(3)))
 	total := calculation.Total
 
 	expectedAnswer := cmplx.Exp(complex(0, 2 * math.Pi * (3 + math.Sqrt(3)))) +
@@ -55,29 +57,7 @@ func (suite *WaveFormulaTests) TestWaveFormulaCombinesEisensteinTerms(checker *C
 }
 
 func (suite *WaveFormulaTests) TestWaveFormulaShowsContributionsPerTerm(checker *C) {
-	waveFormula := &wave.Formula{
-		Terms: []*formula.EisensteinFormulaTerm{
-			{
-				XLatticeVector: complex(1,0),
-				YLatticeVector: complex(-0.5, math.Sqrt(3.0)/2.0),
-				PowerN:         1,
-				PowerM:         -2,
-			},
-			{
-				XLatticeVector: complex(1,0),
-				YLatticeVector: complex(-0.5, math.Sqrt(3.0)/2.0),
-				PowerN:         -2,
-				PowerM:         1,
-			},
-			{
-				XLatticeVector: complex(1,0),
-				YLatticeVector: complex(-0.5, math.Sqrt(3.0)/2.0),
-				PowerN:         1,
-				PowerM:         1,
-			},
-		},
-	}
-	calculation := waveFormula.Calculate(complex(math.Sqrt(3), -1 * math.Sqrt(3)))
+	calculation := suite.hexagonalWavePacket.Calculate(complex(math.Sqrt(3), -1 * math.Sqrt(3)))
 
 	checker.Assert(calculation.ContributionByTerm, HasLen, 3)
 
@@ -93,4 +73,3 @@ func (suite *WaveFormulaTests) TestWaveFormulaShowsContributionsPerTerm(checker 
 	checker.Assert(real(calculation.ContributionByTerm[2]), utility.NumericallyCloseEnough{}, real(contributionOfTerm3), 1e-6)
 	checker.Assert(imag(calculation.ContributionByTerm[2]), utility.NumericallyCloseEnough{}, imag(contributionOfTerm3), 1e-6)
 }
-

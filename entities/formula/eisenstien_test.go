@@ -20,6 +20,7 @@ func (suite *EisensteinFormulaSuite) TestVectorCannotBeZero(checker *C) {
 		PowerM: 1,
 		XLatticeVector: complex(0, 0),
 		YLatticeVector: complex(0, 1),
+		Multiplier: complex(1, 0),
 	}
 	err := badLatticeFormula.Validate()
 	checker.Assert(err, ErrorMatches, "lattice vectors cannot be \\(0,0\\)")
@@ -31,6 +32,7 @@ func (suite *EisensteinFormulaSuite) TestVectorsCannotBeCollinear(checker *C) {
 		PowerM: 1,
 		XLatticeVector: complex(1, 1),
 		YLatticeVector: complex(-2, -2),
+		Multiplier: complex(1, 0),
 	}
 	err := badLatticeFormula.Validate()
 	checker.Assert(err, ErrorMatches, "vectors cannot be collinear: (.*,.*) and (.*,.*)")
@@ -42,6 +44,7 @@ func (suite *EisensteinFormulaSuite) TestGoodLatticeVectorsAreValid(checker *C) 
 		PowerM: 1,
 		XLatticeVector: complex(1, 0),
 		YLatticeVector: complex(0, 1),
+		Multiplier: complex(1, 0),
 	}
 	err := squareLatticeFormula.Validate()
 	checker.Assert(err, IsNil)
@@ -53,6 +56,7 @@ func (suite *EisensteinFormulaSuite) TestConvertToLatticeVector(checker *C) {
 		PowerM: 1,
 		XLatticeVector: complex(1, 0),
 		YLatticeVector: complex(0, 1),
+		Multiplier: complex(1, 0),
 	}
 
 	latticeCoordinate := squareLatticeFormula.ConvertToLatticeCoordinates(complex(1.0,2.0))
@@ -66,6 +70,7 @@ func (suite *EisensteinFormulaSuite) TestConvertToLatticeVectorEvenIfFirstVector
 		PowerM: 1,
 		XLatticeVector: complex(0, 1),
 		YLatticeVector: complex(1, 0),
+		Multiplier: complex(1, 0),
 	}
 
 	latticeCoordinate := squareLatticeFormulaWithFlippedVectors.ConvertToLatticeCoordinates(complex(1.0,2.0))
@@ -79,6 +84,7 @@ func (suite *EisensteinFormulaSuite) TestCalculateEisensteinTermForGivenPoint(ch
 		PowerM: 1,
 		XLatticeVector: complex(1, 0),
 		YLatticeVector: complex(0, 1),
+		Multiplier: complex(1, 0),
 	}
 
 	latticeCoordinate := squareLatticeFormula.Calculate(complex(1.0,1.5))
@@ -128,4 +134,18 @@ power_m: -10
 	checker.Assert(imag(term.YLatticeVector), utility.NumericallyCloseEnough{}, -9000, 1e-6)
 	checker.Assert(term.PowerN, Equals, 12)
 	checker.Assert(term.PowerM, Equals, -10)
+}
+
+func (suite *EisensteinFormulaSuite) TestCalculateEisensteinWithMultiplier(checker *C) {
+	squareLatticeFormula := formula.EisensteinFormulaTerm{
+		PowerN: 1,
+		PowerM: 1,
+		XLatticeVector: complex(1, 0),
+		YLatticeVector: complex(0, 1),
+		Multiplier: complex(2, 0),
+	}
+
+	latticeCoordinate := squareLatticeFormula.Calculate(complex(1.0,1.5))
+	checker.Assert(real(latticeCoordinate), utility.NumericallyCloseEnough{}, -2.0, 1e-6)
+	checker.Assert(imag(latticeCoordinate), utility.NumericallyCloseEnough{}, 0.0, 1e-6)
 }
