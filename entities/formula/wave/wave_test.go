@@ -73,3 +73,16 @@ func (suite *WaveFormulaTests) TestWaveFormulaShowsContributionsPerTerm(checker 
 	checker.Assert(real(calculation.ContributionByTerm[2]), utility.NumericallyCloseEnough{}, real(contributionOfTerm3), 1e-6)
 	checker.Assert(imag(calculation.ContributionByTerm[2]), utility.NumericallyCloseEnough{}, imag(contributionOfTerm3), 1e-6)
 }
+
+func (suite *WaveFormulaTests) TestWaveFormulaUsesMultiplier(checker *C) {
+	suite.hexagonalWavePacket.Multiplier = complex(1/3.0, 0)
+	calculation := suite.hexagonalWavePacket.Calculate(complex(math.Sqrt(3), -1 * math.Sqrt(3)))
+	total := calculation.Total
+
+	expectedAnswer := (cmplx.Exp(complex(0, 2 * math.Pi * (3 + math.Sqrt(3)))) +
+		cmplx.Exp(complex(0, 2 * math.Pi * (-2 * math.Sqrt(3)))) +
+		cmplx.Exp(complex(0, 2 * math.Pi * (-3 + math.Sqrt(3))))) / 3
+
+	checker.Assert(real(total), utility.NumericallyCloseEnough{}, real(expectedAnswer), 1e-6)
+	checker.Assert(imag(total), utility.NumericallyCloseEnough{}, imag(expectedAnswer), 1e-6)
+}

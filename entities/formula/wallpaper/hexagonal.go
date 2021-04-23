@@ -70,5 +70,6 @@ func (hexagonalFormula *HexagonalFormula) createWavePacket(term *PowerTerm) *wav
 				PowerM:         term.PowerN,
 			},
 		},
+		Multiplier: complex(1/3.0, 0) * term.Multiplier,
 	}
 }

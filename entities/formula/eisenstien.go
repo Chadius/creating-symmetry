@@ -25,7 +25,6 @@ type EisensteinFormulaTerm struct {
 	YLatticeVector			complex128
 	PowerN					int
 	PowerM					int
-	Multiplier				complex128
 }
 
 func vectorIsZero(vector complex128) bool {

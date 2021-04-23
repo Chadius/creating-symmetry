@@ -21,6 +21,7 @@ func (waveFormula Formula) Calculate(z complex128) *formula.CalculationResultFor
 		result.Total += termContribution
 		result.ContributionByTerm = append(result.ContributionByTerm, termContribution)
 	}
+	result.Total *= waveFormula.Multiplier
 
 	return result
 }
