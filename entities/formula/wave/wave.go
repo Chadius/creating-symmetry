@@ -74,3 +74,12 @@ func NewWaveFormulaFromMarshalObject(marshalObject FormulaMarshalable) *Formula 
 		Multiplier:	complex(marshalObject.Multiplier.Real, marshalObject.Multiplier.Imaginary),
 	}
 }
+
+// Symmetry tracks the various ways a Wave Pattern formula can have symmetry.
+type Symmetry struct {
+	P3 bool
+	P31m bool
+	P3m1 bool
+	P6 bool
+	P6m bool
+}

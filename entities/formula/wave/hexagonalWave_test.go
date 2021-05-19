@@ -96,3 +96,173 @@ wave_packets:
 	checker.Assert(hexFormula.WavePackets, HasLen, 1)
 	checker.Assert(hexFormula.WavePackets[0].Terms[0].PowerM, Equals, -10)
 }
+
+type HexagonalWaveSymmetry struct {
+	baseWavePacket *wave.Formula
+}
+
+var _ = Suite(&HexagonalWaveSymmetry{})
+
+func (suite *HexagonalWaveSymmetry) SetUpTest(checker *C) {
+	suite.baseWavePacket = &wave.Formula{
+	Terms:[]*formula.EisensteinFormulaTerm{
+			{
+				PowerN:         8,
+				PowerM:         -3,
+			},
+		},
+		Multiplier: complex(1, 0),
+	}
+}
+
+func (suite *HexagonalWaveSymmetry) TestNoSymmetryFound(checker *C) {
+	arbitraryHex := wave.HexagonalWallpaperFormula{
+		WavePackets: []*wave.Formula{
+			suite.baseWavePacket,
+		},
+		Multiplier:  complex(1, 0),
+	}
+
+	arbitraryHex.SetUp()
+
+	symmetriesFound := arbitraryHex.FindSymmetries()
+	checker.Assert(symmetriesFound.P31m, Equals, false)
+	checker.Assert(symmetriesFound.P3m1, Equals, false)
+	checker.Assert(symmetriesFound.P6, Equals, false)
+	checker.Assert(symmetriesFound.P6m, Equals, false)
+}
+
+func (suite *HexagonalWaveSymmetry) TestP31m(checker *C) {
+	arbitraryHex := wave.HexagonalWallpaperFormula{
+		WavePackets: []*wave.Formula{
+			suite.baseWavePacket,
+			{
+				Terms: []*formula.EisensteinFormulaTerm{
+					{
+						XLatticeVector: suite.baseWavePacket.Terms[0].XLatticeVector,
+						YLatticeVector: suite.baseWavePacket.Terms[0].YLatticeVector,
+						PowerN: suite.baseWavePacket.Terms[0].PowerM,
+						PowerM: suite.baseWavePacket.Terms[0].PowerN,
+					},
+				},
+				Multiplier: suite.baseWavePacket.Multiplier,
+			},
+		},
+		Multiplier:  complex(1, 0),
+	}
+
+	arbitraryHex.SetUp()
+
+	symmetriesFound := arbitraryHex.FindSymmetries()
+	checker.Assert(symmetriesFound.P31m, Equals, true)
+	checker.Assert(symmetriesFound.P3m1, Equals, false)
+	checker.Assert(symmetriesFound.P6, Equals, false)
+	checker.Assert(symmetriesFound.P6m, Equals, false)
+}
+
+func (suite *HexagonalWaveSymmetry) TestP3m1(checker *C) {
+	arbitraryHex := wave.HexagonalWallpaperFormula{
+		WavePackets: []*wave.Formula{
+			suite.baseWavePacket,
+			{
+				Terms: []*formula.EisensteinFormulaTerm{
+					{
+						XLatticeVector: suite.baseWavePacket.Terms[0].XLatticeVector,
+						YLatticeVector: suite.baseWavePacket.Terms[0].YLatticeVector,
+						PowerN: suite.baseWavePacket.Terms[0].PowerM * -1,
+						PowerM: suite.baseWavePacket.Terms[0].PowerN * -1,
+					},
+				},
+				Multiplier: suite.baseWavePacket.Multiplier,
+			},
+		},
+		Multiplier:  complex(1, 0),
+	}
+
+	arbitraryHex.SetUp()
+
+	symmetriesFound := arbitraryHex.FindSymmetries()
+	checker.Assert(symmetriesFound.P31m, Equals, false)
+	checker.Assert(symmetriesFound.P3m1, Equals, true)
+	checker.Assert(symmetriesFound.P6, Equals, false)
+	checker.Assert(symmetriesFound.P6m, Equals, false)
+}
+
+func (suite *HexagonalWaveSymmetry) TestP6(checker *C) {
+	arbitraryHex := wave.HexagonalWallpaperFormula{
+		WavePackets: []*wave.Formula{
+			suite.baseWavePacket,
+			{
+				Terms: []*formula.EisensteinFormulaTerm{
+					{
+						XLatticeVector: suite.baseWavePacket.Terms[0].XLatticeVector,
+						YLatticeVector: suite.baseWavePacket.Terms[0].YLatticeVector,
+						PowerN: suite.baseWavePacket.Terms[0].PowerN * -1,
+						PowerM: suite.baseWavePacket.Terms[0].PowerM * -1,
+					},
+				},
+				Multiplier: suite.baseWavePacket.Multiplier,
+			},
+		},
+		Multiplier:  complex(1, 0),
+	}
+
+	arbitraryHex.SetUp()
+
+	symmetriesFound := arbitraryHex.FindSymmetries()
+	checker.Assert(symmetriesFound.P31m, Equals, false)
+	checker.Assert(symmetriesFound.P3m1, Equals, false)
+	checker.Assert(symmetriesFound.P6, Equals, true)
+	checker.Assert(symmetriesFound.P6m, Equals, false)
+}
+
+func (suite *HexagonalWaveSymmetry) TestP6m(checker *C) {
+	arbitraryHex := wave.HexagonalWallpaperFormula{
+		WavePackets: []*wave.Formula{
+			suite.baseWavePacket,
+			{
+				Terms: []*formula.EisensteinFormulaTerm{
+					{
+						XLatticeVector: suite.baseWavePacket.Terms[0].XLatticeVector,
+						YLatticeVector: suite.baseWavePacket.Terms[0].YLatticeVector,
+						PowerN: suite.baseWavePacket.Terms[0].PowerN * -1,
+						PowerM: suite.baseWavePacket.Terms[0].PowerM * -1,
+					},
+				},
+				Multiplier: suite.baseWavePacket.Multiplier,
+			},
+			{
+				Terms: []*formula.EisensteinFormulaTerm{
+					{
+						XLatticeVector: suite.baseWavePacket.Terms[0].XLatticeVector,
+						YLatticeVector: suite.baseWavePacket.Terms[0].YLatticeVector,
+						PowerN: suite.baseWavePacket.Terms[0].PowerM,
+						PowerM: suite.baseWavePacket.Terms[0].PowerN,
+					},
+				},
+				Multiplier: suite.baseWavePacket.Multiplier,
+			},
+			{
+				Terms: []*formula.EisensteinFormulaTerm{
+					{
+						XLatticeVector: suite.baseWavePacket.Terms[0].XLatticeVector,
+						YLatticeVector: suite.baseWavePacket.Terms[0].YLatticeVector,
+						PowerN: suite.baseWavePacket.Terms[0].PowerM * -1,
+						PowerM: suite.baseWavePacket.Terms[0].PowerN * -1,
+					},
+				},
+				Multiplier: suite.baseWavePacket.Multiplier,
+			},
+		},
+		Multiplier:  complex(1, 0),
+	}
+
+	arbitraryHex.SetUp()
+
+	symmetriesFound := arbitraryHex.FindSymmetries()
+	checker.Assert(symmetriesFound.P31m, Equals, false)
+	checker.Assert(symmetriesFound.P3m1, Equals, false)
+	checker.Assert(symmetriesFound.P6, Equals, false)
+	checker.Assert(symmetriesFound.P6m, Equals, true)
+}
+

@@ -200,6 +200,25 @@ func transformCoordinatesForHexagonalWallpaperFormula(wallpaperFormula *wave.Hex
 		minz, maxz := mathutility.GetBoundingBox(results)
 		fmt.Printf("%d: %e - %e\n", index, minz, maxz)
 	}
+
+	println("Symmetries found:")
+	hexWallpaperSymmetry := wallpaperFormula.FindSymmetries()
+	if hexWallpaperSymmetry.P31m {
+		println("  p31m")
+	}
+	if hexWallpaperSymmetry.P3m1 {
+		println("  p3m1")
+	}
+	if hexWallpaperSymmetry.P6 {
+		println("  p6")
+	}
+	if hexWallpaperSymmetry.P6m {
+		println("  p6m")
+	}
+	if hexWallpaperSymmetry.P3 {
+		println("  p3")
+	}
+
 	return transformedCoordinates
 }
 

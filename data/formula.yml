@@ -24,5 +24,29 @@ hexagonal_wallpaper_formula:
         imaginary: 1
       terms:
         -
-          power_n: 1
+          power_n: 2
           power_m: -1
+    -
+      multiplier:
+        real: 1
+        imaginary: 1
+      terms:
+        -
+          power_n: -2
+          power_m: 1
+    -
+      multiplier:
+        real: 1
+        imaginary: 1
+      terms:
+        -
+          power_n: -1
+          power_m: 2
+    -
+      multiplier:
+        real: 1
+        imaginary: 1
+      terms:
+        -
+          power_n: 1
+          power_m: -2

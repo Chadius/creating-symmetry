@@ -77,6 +77,28 @@ func (hexWaveFormula *HexagonalWallpaperFormula) Calculate(z complex128) *formul
 	return result
 }
 
+// FindSymmetries returns an object with a bunch of symmetries.
+func (hexWaveFormula *HexagonalWallpaperFormula) FindSymmetries() *Symmetry {
+	foundSymmetries := Symmetry{
+		P3: true,
+	}
+
+	symmetryFound := FindWaveRelationships(hexWaveFormula.WavePackets)
+	if symmetryFound == PlusMPlusN {
+		foundSymmetries.P31m = true
+	}
+	if symmetryFound == MinusMMinusN {
+		foundSymmetries.P3m1 = true
+	}
+	if symmetryFound == MinusNMinusM {
+		foundSymmetries.P6 = true
+	}
+	if symmetryFound == MinusNMinusMPlusMPlusNMinusMMinusN {
+		foundSymmetries.P6m = true
+	}
+	return &foundSymmetries
+}
+
 // NewHexagonalWallpaperFormulaFromJSON reads the data and returns a formula term from it.
 func NewHexagonalWallpaperFormulaFromJSON(data []byte) (*HexagonalWallpaperFormula, error) {
 	return newHexagonalWallpaperFormulaFromDatastream(data, json.Unmarshal)
