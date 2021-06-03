@@ -4,15 +4,15 @@ output_size:
   width: 800
   height: 600
 sample_space:
-  minx: -2e0
-  miny: -2e0
-  maxx: 2e0
-  maxy: 2e0
+  minx: -1e0
+  miny: -1e0
+  maxx: 1e0
+  maxy: 1e0
 color_value_space:
-  minx: -3e-0
-  miny: -3e-0
-  maxx: 3e-0
-  maxy: 3e-0
+  minx: -5e-0
+  miny: -5e-0
+  maxx: 5e-0
+  maxy: 5e-0
 skip_square_wallpaper_formula:
   multiplier:
     real: 1
@@ -57,7 +57,7 @@ hexagonal_wallpaper_formula:
           power_m: 4
     -
       multiplier:
-        real: 5e-1
+        real: 5e-2
         imaginary: 0
       terms:
         -
@@ -65,7 +65,7 @@ hexagonal_wallpaper_formula:
           power_m: -2
     -
       multiplier:
-        real: 5e-1
+        real: 5e-2
         imaginary: 0
       terms:
         -

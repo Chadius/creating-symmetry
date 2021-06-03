@@ -13,7 +13,6 @@ import (
 	"wallpaper/entities/formula/rosette"
 	"wallpaper/entities/formula/wavepacket"
 
-	//"image/png"
 	_ "image/png"
 	"os"
 	"wallpaper/entities/mathutility"
@@ -206,20 +205,20 @@ func transformCoordinatesForHexagonalWallpaperFormula(wallpaperFormula *wavepack
 	}
 
 	println("Symmetries found:")
-	hexWallpaperSymmetry := wallpaperFormula.FindSymmetries()
-	if hexWallpaperSymmetry.P31m {
+
+	if wallpaperFormula.HasSymmetry(wavepacket.P31m) {
 		println("  p31m")
 	}
-	if hexWallpaperSymmetry.P3m1 {
+	if wallpaperFormula.HasSymmetry(wavepacket.P3m1) {
 		println("  p3m1")
 	}
-	if hexWallpaperSymmetry.P6 {
+	if wallpaperFormula.HasSymmetry(wavepacket.P6) {
 		println("  p6")
 	}
-	if hexWallpaperSymmetry.P6m {
+	if wallpaperFormula.HasSymmetry(wavepacket.P6m) {
 		println("  p6m")
 	}
-	if hexWallpaperSymmetry.P3 {
+	if wallpaperFormula.HasSymmetry(wavepacket.P3) {
 		println("  p3")
 	}
 
@@ -252,14 +251,13 @@ func transformCoordinatesForSquareWallpaperFormula(wallpaperFormula *wavepacket.
 	}
 
 	println("Symmetries found:")
-	squareWallpaperSymmetry := wallpaperFormula.FindSymmetries()
-	if squareWallpaperSymmetry.P4 {
+	if wallpaperFormula.HasSymmetry(wavepacket.P4) {
 		println("  p4")
 	}
-	if squareWallpaperSymmetry.P4m {
+	if wallpaperFormula.HasSymmetry(wavepacket.P4m) {
 		println("  p4m")
 	}
-	if squareWallpaperSymmetry.P4g {
+	if wallpaperFormula.HasSymmetry(wavepacket.P4g) {
 		println("  p4g")
 	}
 

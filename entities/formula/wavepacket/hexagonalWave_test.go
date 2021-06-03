@@ -18,7 +18,7 @@ var _ = Suite(&HexagonalWaveFormula{})
 func (suite *HexagonalWaveFormula) SetUpTest(checker *C) {
 	suite.hexagonalWavePacket = &wavepacket.HexagonalWallpaperFormula{
 		Formula: &wavepacket.WallpaperFormula{
-			WavePackets: []*wavepacket.Formula{
+			WavePackets: []*wavepacket.WavePacket{
 				{
 					Terms: []*formula.EisensteinFormulaTerm{
 						{
@@ -100,13 +100,13 @@ wave_packets:
 }
 
 type HexagonalWaveSymmetry struct {
-	baseWavePacket *wavepacket.Formula
+	baseWavePacket *wavepacket.WavePacket
 }
 
 var _ = Suite(&HexagonalWaveSymmetry{})
 
 func (suite *HexagonalWaveSymmetry) SetUpTest(checker *C) {
-	suite.baseWavePacket = &wavepacket.Formula{
+	suite.baseWavePacket = &wavepacket.WavePacket{
 	Terms:[]*formula.EisensteinFormulaTerm{
 			{
 				PowerN:         8,
@@ -120,7 +120,7 @@ func (suite *HexagonalWaveSymmetry) SetUpTest(checker *C) {
 func (suite *HexagonalWaveSymmetry) TestNoSymmetryFound(checker *C) {
 	arbitraryHex := wavepacket.HexagonalWallpaperFormula{
 		Formula: &wavepacket.WallpaperFormula{
-			WavePackets: []*wavepacket.Formula{
+			WavePackets: []*wavepacket.WavePacket{
 				suite.baseWavePacket,
 			},
 			Multiplier: complex(1, 0),
@@ -128,18 +128,17 @@ func (suite *HexagonalWaveSymmetry) TestNoSymmetryFound(checker *C) {
 	}
 
 	arbitraryHex.SetUp()
-
-	symmetriesFound := arbitraryHex.FindSymmetries()
-	checker.Assert(symmetriesFound.P31m, Equals, false)
-	checker.Assert(symmetriesFound.P3m1, Equals, false)
-	checker.Assert(symmetriesFound.P6, Equals, false)
-	checker.Assert(symmetriesFound.P6m, Equals, false)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P3), Equals, true)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P31m), Equals, false)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P3m1), Equals, false)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P6), Equals, false)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P6m), Equals, false)
 }
 
 func (suite *HexagonalWaveSymmetry) TestP31m(checker *C) {
 	arbitraryHex := wavepacket.HexagonalWallpaperFormula{
 		Formula: &wavepacket.WallpaperFormula{
-			WavePackets: []*wavepacket.Formula{
+			WavePackets: []*wavepacket.WavePacket{
 				suite.baseWavePacket,
 				{
 					Terms: []*formula.EisensteinFormulaTerm{
@@ -155,18 +154,17 @@ func (suite *HexagonalWaveSymmetry) TestP31m(checker *C) {
 	}
 
 	arbitraryHex.SetUp()
-
-	symmetriesFound := arbitraryHex.FindSymmetries()
-	checker.Assert(symmetriesFound.P31m, Equals, true)
-	checker.Assert(symmetriesFound.P3m1, Equals, false)
-	checker.Assert(symmetriesFound.P6, Equals, false)
-	checker.Assert(symmetriesFound.P6m, Equals, false)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P3), Equals, true)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P31m), Equals, true)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P3m1), Equals, false)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P6), Equals, false)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P6m), Equals, false)
 }
 
 func (suite *HexagonalWaveSymmetry) TestP3m1(checker *C) {
 	arbitraryHex := wavepacket.HexagonalWallpaperFormula{
 		Formula: &wavepacket.WallpaperFormula{
-			WavePackets: []*wavepacket.Formula{
+			WavePackets: []*wavepacket.WavePacket{
 				suite.baseWavePacket,
 				{
 					Terms: []*formula.EisensteinFormulaTerm{
@@ -183,18 +181,17 @@ func (suite *HexagonalWaveSymmetry) TestP3m1(checker *C) {
 	}
 
 	arbitraryHex.SetUp()
-
-	symmetriesFound := arbitraryHex.FindSymmetries()
-	checker.Assert(symmetriesFound.P31m, Equals, false)
-	checker.Assert(symmetriesFound.P3m1, Equals, true)
-	checker.Assert(symmetriesFound.P6, Equals, false)
-	checker.Assert(symmetriesFound.P6m, Equals, false)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P3), Equals, true)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P31m), Equals, false)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P3m1), Equals, true)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P6), Equals, false)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P6m), Equals, false)
 }
 
 func (suite *HexagonalWaveSymmetry) TestP6(checker *C) {
 	arbitraryHex := wavepacket.HexagonalWallpaperFormula{
 		Formula: &wavepacket.WallpaperFormula{
-			WavePackets: []*wavepacket.Formula{
+			WavePackets: []*wavepacket.WavePacket{
 				suite.baseWavePacket,
 				{
 					Terms: []*formula.EisensteinFormulaTerm{
@@ -212,17 +209,17 @@ func (suite *HexagonalWaveSymmetry) TestP6(checker *C) {
 
 	arbitraryHex.SetUp()
 
-	symmetriesFound := arbitraryHex.FindSymmetries()
-	checker.Assert(symmetriesFound.P31m, Equals, false)
-	checker.Assert(symmetriesFound.P3m1, Equals, false)
-	checker.Assert(symmetriesFound.P6, Equals, true)
-	checker.Assert(symmetriesFound.P6m, Equals, false)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P3), Equals, true)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P31m), Equals, false)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P3m1), Equals, false)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P6), Equals, true)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P6m), Equals, false)
 }
 
 func (suite *HexagonalWaveSymmetry) TestP6m(checker *C) {
 	arbitraryHex := wavepacket.HexagonalWallpaperFormula{
 		Formula: &wavepacket.WallpaperFormula{
-			WavePackets: []*wavepacket.Formula{
+			WavePackets: []*wavepacket.WavePacket{
 				suite.baseWavePacket,
 				{
 					Terms: []*formula.EisensteinFormulaTerm{
@@ -257,18 +254,17 @@ func (suite *HexagonalWaveSymmetry) TestP6m(checker *C) {
 	}
 
 	arbitraryHex.SetUp()
-
-	symmetriesFound := arbitraryHex.FindSymmetries()
-	checker.Assert(symmetriesFound.P31m, Equals, false)
-	checker.Assert(symmetriesFound.P3m1, Equals, false)
-	checker.Assert(symmetriesFound.P6, Equals, false)
-	checker.Assert(symmetriesFound.P6m, Equals, true)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P3), Equals, true)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P31m), Equals, true)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P3m1), Equals, true)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P6), Equals, true)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P6m), Equals, true)
 }
 
 func (suite *HexagonalWaveSymmetry) TestMultipleSymmetries(checker *C) {
 	arbitraryHex := wavepacket.HexagonalWallpaperFormula{
 		Formula: &wavepacket.WallpaperFormula{
-			WavePackets: []*wavepacket.Formula{
+			WavePackets: []*wavepacket.WavePacket{
 				{
 					Terms: []*formula.EisensteinFormulaTerm{
 						{
@@ -293,12 +289,11 @@ func (suite *HexagonalWaveSymmetry) TestMultipleSymmetries(checker *C) {
 	}
 
 	arbitraryHex.SetUp()
-
-	symmetriesFound := arbitraryHex.FindSymmetries()
-	checker.Assert(symmetriesFound.P31m, Equals, true)
-	checker.Assert(symmetriesFound.P3m1, Equals, false)
-	checker.Assert(symmetriesFound.P6, Equals, true)
-	checker.Assert(symmetriesFound.P6m, Equals, false)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P3), Equals, true)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P31m), Equals, true)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P3m1), Equals, false)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P6), Equals, true)
+	checker.Assert(arbitraryHex.HasSymmetry(wavepacket.P6m), Equals, false)
 }
 
 type HexagonalCreatedWithDesiredSymmetry struct {
@@ -319,15 +314,6 @@ func (suite *HexagonalCreatedWithDesiredSymmetry) SetUpTest (checker *C) {
 	suite.wallpaperMultiplier = complex(1, 0)
 }
 
-func (suite *HexagonalCreatedWithDesiredSymmetry) SymmetryCheck(checker *C, hexFormula *wavepacket.HexagonalWallpaperFormula , desiredSymmetry wavepacket.Symmetry) {
-	symmetriesFound := hexFormula.FindSymmetries()
-	checker.Assert(symmetriesFound.P3, Equals, desiredSymmetry.P3)
-	checker.Assert(symmetriesFound.P31m, Equals, desiredSymmetry.P31m)
-	checker.Assert(symmetriesFound.P3m1, Equals, desiredSymmetry.P3m1)
-	checker.Assert(symmetriesFound.P6, Equals, desiredSymmetry.P6)
-	checker.Assert(symmetriesFound.P6m, Equals, desiredSymmetry.P6m)
-}
-
 func (suite *HexagonalCreatedWithDesiredSymmetry) TestNoSymmetryDoesNotChangePattern(checker *C) {
 	hexFormula, err := wavepacket.NewHexagonalWallpaperFormulaWithSymmetry(
 		suite.singleEisensteinFormulaTerm,
@@ -339,9 +325,7 @@ func (suite *HexagonalCreatedWithDesiredSymmetry) TestNoSymmetryDoesNotChangePat
 	checker.Assert(hexFormula.Formula.WavePackets, HasLen, 1)
 	checker.Assert(hexFormula.Formula.WavePackets[0].Terms, HasLen, 3)
 
-	suite.SymmetryCheck(checker, hexFormula, wavepacket.Symmetry{
-		P3:   true,
-	})
+	checker.Assert(hexFormula.HasSymmetry(wavepacket.P3), Equals, true)
 }
 
 func (suite *HexagonalCreatedWithDesiredSymmetry) TestCreateWallpaperWithP31m(checker *C) {
@@ -360,10 +344,8 @@ func (suite *HexagonalCreatedWithDesiredSymmetry) TestCreateWallpaperWithP31m(ch
 	checker.Assert(hexFormula.Formula.WavePackets[1].Terms[0].PowerM, Equals, 1)
 	checker.Assert(hexFormula.Formula.WavePackets[1].Terms[0].PowerN, Equals, -2)
 
-	suite.SymmetryCheck(checker, hexFormula, wavepacket.Symmetry{
-		P3:   true,
-		P31m:   true,
-	})
+	checker.Assert(hexFormula.HasSymmetry(wavepacket.P3), Equals, true)
+	checker.Assert(hexFormula.HasSymmetry(wavepacket.P31m), Equals, true)
 }
 
 func (suite *HexagonalCreatedWithDesiredSymmetry) TestCreateWallpaperWithP3m1(checker *C) {
@@ -382,10 +364,8 @@ func (suite *HexagonalCreatedWithDesiredSymmetry) TestCreateWallpaperWithP3m1(ch
 	checker.Assert(hexFormula.Formula.WavePackets[1].Terms[0].PowerM, Equals, -1)
 	checker.Assert(hexFormula.Formula.WavePackets[1].Terms[0].PowerN, Equals, 2)
 
-	suite.SymmetryCheck(checker, hexFormula, wavepacket.Symmetry{
-		P3:   true,
-		P3m1:   true,
-	})
+	checker.Assert(hexFormula.HasSymmetry(wavepacket.P3), Equals, true)
+	checker.Assert(hexFormula.HasSymmetry(wavepacket.P3m1), Equals, true)
 }
 
 func (suite *HexagonalCreatedWithDesiredSymmetry) TestCreateWallpaperWithP6(checker *C) {
@@ -404,10 +384,8 @@ func (suite *HexagonalCreatedWithDesiredSymmetry) TestCreateWallpaperWithP6(chec
 	checker.Assert(hexFormula.Formula.WavePackets[1].Terms[0].PowerM, Equals, 2)
 	checker.Assert(hexFormula.Formula.WavePackets[1].Terms[0].PowerN, Equals, -1)
 
-	suite.SymmetryCheck(checker, hexFormula, wavepacket.Symmetry{
-		P3:   true,
-		P6:   true,
-	})
+	checker.Assert(hexFormula.HasSymmetry(wavepacket.P3), Equals, true)
+	checker.Assert(hexFormula.HasSymmetry(wavepacket.P6), Equals, true)
 }
 
 func (suite *HexagonalCreatedWithDesiredSymmetry) TestCreateWallpaperWithP6m(checker *C) {
@@ -432,10 +410,8 @@ func (suite *HexagonalCreatedWithDesiredSymmetry) TestCreateWallpaperWithP6m(che
 	checker.Assert(hexFormula.Formula.WavePackets[3].Terms[0].PowerM, Equals, -1)
 	checker.Assert(hexFormula.Formula.WavePackets[3].Terms[0].PowerN, Equals, 2)
 
-	suite.SymmetryCheck(checker, hexFormula, wavepacket.Symmetry{
-		P3:   true,
-		P6m:   true,
-	})
+	checker.Assert(hexFormula.HasSymmetry(wavepacket.P3), Equals, true)
+	checker.Assert(hexFormula.HasSymmetry(wavepacket.P6m), Equals, true)
 }
 
 func (suite *HexagonalCreatedWithDesiredSymmetry) TestCreateWallpaperWithMultipleTerms(checker *C) {
@@ -497,3 +473,333 @@ func (suite *HexagonalCreatedWithDesiredSymmetry) TestOnlyP3CanBeCombined(checke
 	checker.Assert(errIncompatible, ErrorMatches, "invalid desired symmetry")
 }
 
+type HexagonalWaveDetectRelationship struct {}
+
+var _= Suite(&HexagonalWaveDetectRelationship{})
+
+func (suite *HexagonalWaveDetectRelationship) TestP31mSymmetryDetectedAcrossSinglePairs (checker *C) {
+	p31mHex := &wavepacket.HexagonalWallpaperFormula{
+		Formula: &wavepacket.WallpaperFormula{
+			WavePackets: []*wavepacket.WavePacket{
+				{
+					Terms: []*formula.EisensteinFormulaTerm{
+						{
+							PowerN: -2,
+							PowerM: 1,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+				{
+					Terms: []*formula.EisensteinFormulaTerm{
+						{
+							PowerN: 1,
+							PowerM: -2,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+			},
+			Multiplier: complex(1, 0),
+		},
+	}
+	p31mHex.SetUp()
+
+	checker.Assert(p31mHex.HasSymmetry(wavepacket.P31m), Equals, true)
+}
+
+func (suite *HexagonalWaveDetectRelationship) TestP31mSymmetryDetectedAcrossMultiplePairs (checker *C) {
+	p31mHex := &wavepacket.HexagonalWallpaperFormula{
+		Formula: &wavepacket.WallpaperFormula{
+			WavePackets: []*wavepacket.WavePacket{
+				{
+					Terms: []*formula.EisensteinFormulaTerm{
+						{
+							PowerN: -2,
+							PowerM: 1,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+				{
+					Terms: []*formula.EisensteinFormulaTerm{
+						{
+							PowerN: 5,
+							PowerM: -2,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+				{
+					Terms: []*formula.EisensteinFormulaTerm{
+						{
+							PowerN: -2,
+							PowerM: 5,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+				{
+					Terms: []*formula.EisensteinFormulaTerm{
+						{
+							PowerN: 1,
+							PowerM: -2,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+			},
+			Multiplier: complex(1, 0),
+		},
+	}
+	p31mHex.SetUp()
+
+	checker.Assert(p31mHex.HasSymmetry(wavepacket.P31m), Equals, true)
+}
+
+func (suite *HexagonalWaveDetectRelationship) TestP3SymmetryIsAlwaysTrueForHexPatterns (checker *C) {
+	p3Hex := &wavepacket.HexagonalWallpaperFormula{
+		Formula: &wavepacket.WallpaperFormula{
+			WavePackets: []*wavepacket.WavePacket{
+				{
+					Terms: []*formula.EisensteinFormulaTerm{
+						{
+							PowerN: -2,
+							PowerM: 1,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+			},
+			Multiplier: complex(1, 0),
+		},
+	}
+	p3Hex.SetUp()
+
+	checker.Assert(p3Hex.HasSymmetry(wavepacket.P3), Equals, true)
+}
+
+func (suite *HexagonalWaveDetectRelationship) TestFewerThanTwoPacketsMeansNoSymmetry (checker *C) {
+	p3Hex := &wavepacket.HexagonalWallpaperFormula{
+		Formula: &wavepacket.WallpaperFormula{
+			WavePackets: []*wavepacket.WavePacket{
+				{
+					Terms: []*formula.EisensteinFormulaTerm{
+						{
+							PowerN: -2,
+							PowerM: 1,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+			},
+			Multiplier: complex(1, 0),
+		},
+	}
+	p3Hex.SetUp()
+
+	checker.Assert(p3Hex.HasSymmetry(wavepacket.P3m1), Equals, false)
+	checker.Assert(p3Hex.HasSymmetry(wavepacket.P31m), Equals, false)
+	checker.Assert(p3Hex.HasSymmetry(wavepacket.P6), Equals, false)
+	checker.Assert(p3Hex.HasSymmetry(wavepacket.P6m), Equals, false)
+}
+
+func (suite *HexagonalWaveDetectRelationship) TestOddNumberOfWavePacketsMeansNoSymmetry (checker *C) {
+	p31mHex := &wavepacket.HexagonalWallpaperFormula{
+		Formula: &wavepacket.WallpaperFormula{
+			WavePackets: []*wavepacket.WavePacket{
+				{
+					Terms: []*formula.EisensteinFormulaTerm{
+						{
+							PowerN: -2,
+							PowerM: 1,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+				{
+					Terms: []*formula.EisensteinFormulaTerm{
+						{
+							PowerN: 5,
+							PowerM: -2,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+				{
+					Terms: []*formula.EisensteinFormulaTerm{
+						{
+							PowerN: -2,
+							PowerM: 5,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+				{
+					Terms: []*formula.EisensteinFormulaTerm{
+						{
+							PowerN: 1,
+							PowerM: -2,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+				{
+					Terms: []*formula.EisensteinFormulaTerm{
+						{
+							PowerN: 1,
+							PowerM: -2,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+			},
+			Multiplier: complex(1, 0),
+		},
+	}
+	p31mHex.SetUp()
+
+	checker.Assert(p31mHex.HasSymmetry(wavepacket.P31m), Equals, false)
+}
+
+func (suite *HexagonalWaveDetectRelationship) TestP3m1 (checker *C) {
+	p31mHex := &wavepacket.HexagonalWallpaperFormula{
+		Formula: &wavepacket.WallpaperFormula{
+			WavePackets: []*wavepacket.WavePacket{
+				{
+					Terms: []*formula.EisensteinFormulaTerm{
+						{
+							PowerN: -2,
+							PowerM: 1,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+				{
+					Terms: []*formula.EisensteinFormulaTerm{
+						{
+							PowerN: -1,
+							PowerM: 2,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+			},
+			Multiplier: complex(1, 0),
+		},
+	}
+	p31mHex.SetUp()
+
+	checker.Assert(p31mHex.HasSymmetry(wavepacket.P3m1), Equals, true)
+}
+
+func (suite *HexagonalWaveDetectRelationship) TestP6 (checker *C) {
+	p31mHex := &wavepacket.HexagonalWallpaperFormula{
+		Formula: &wavepacket.WallpaperFormula{
+			WavePackets: []*wavepacket.WavePacket{
+				{
+					Terms: []*formula.EisensteinFormulaTerm{
+						{
+							PowerN: -2,
+							PowerM: 1,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+				{
+					Terms: []*formula.EisensteinFormulaTerm{
+						{
+							PowerN: 2,
+							PowerM: -1,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+			},
+			Multiplier: complex(1, 0),
+		},
+	}
+	p31mHex.SetUp()
+
+	checker.Assert(p31mHex.HasSymmetry(wavepacket.P6), Equals, true)
+}
+
+func (suite *HexagonalWaveDetectRelationship) TestP6mCannotBeFoundIfWavePacketsNotDivisibleBy4 (checker *C) {
+	p6Hex := &wavepacket.HexagonalWallpaperFormula{
+		Formula: &wavepacket.WallpaperFormula{
+			WavePackets: []*wavepacket.WavePacket{
+				{
+					Terms: []*formula.EisensteinFormulaTerm{
+						{
+							PowerN: -2,
+							PowerM: 1,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+				{
+					Terms: []*formula.EisensteinFormulaTerm{
+						{
+							PowerN: 2,
+							PowerM: -1,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+			},
+			Multiplier: complex(1, 0),
+		},
+	}
+	p6Hex.SetUp()
+
+	checker.Assert(p6Hex.HasSymmetry(wavepacket.P6m), Equals, false)
+}
+
+func (suite *HexagonalWaveDetectRelationship) TestP6m (checker *C) {
+	p6mHex := &wavepacket.HexagonalWallpaperFormula{
+		Formula: &wavepacket.WallpaperFormula{
+			WavePackets: []*wavepacket.WavePacket{
+				{
+					Terms: []*formula.EisensteinFormulaTerm{
+						{
+							PowerN: -2,
+							PowerM: 1,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+				{
+					Terms: []*formula.EisensteinFormulaTerm{
+						{
+							PowerN: 2,
+							PowerM: -1,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+				{
+					Terms: []*formula.EisensteinFormulaTerm{
+						{
+							PowerN: 1,
+							PowerM: -2,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+				{
+					Terms: []*formula.EisensteinFormulaTerm{
+						{
+							PowerN: -1,
+							PowerM: 2,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+			},
+			Multiplier: complex(1, 0),
+		},
+	}
+	p6mHex.SetUp()
+
+	checker.Assert(p6mHex.HasSymmetry(wavepacket.P6m), Equals, true)
+}

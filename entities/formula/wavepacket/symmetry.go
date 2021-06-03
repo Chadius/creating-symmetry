@@ -2,12 +2,12 @@ package wavepacket
 
 import "wallpaper/entities/formula"
 
-func addNewWavePacketsBasedOnSymmetry(term *formula.EisensteinFormulaTerm, desiredSymmetry *Symmetry, newWavePackets []*Formula) []*Formula {
+func addNewWavePacketsBasedOnSymmetry(term *formula.EisensteinFormulaTerm, desiredSymmetry *Symmetry, newWavePackets []*WavePacket) []*WavePacket {
 	powerN := term.PowerN
 	powerM := term.PowerM
 
 	if desiredSymmetry.P31m || desiredSymmetry.P4m {
-		newWavePackets = append(newWavePackets, &Formula{
+		newWavePackets = append(newWavePackets, &WavePacket{
 			Terms: []*formula.EisensteinFormulaTerm{
 				{
 					PowerM: powerN,
@@ -18,7 +18,7 @@ func addNewWavePacketsBasedOnSymmetry(term *formula.EisensteinFormulaTerm, desir
 		})
 	}
 	if desiredSymmetry.P3m1 {
-		newWavePackets = append(newWavePackets, &Formula{
+		newWavePackets = append(newWavePackets, &WavePacket{
 			Terms: []*formula.EisensteinFormulaTerm{
 				{
 					PowerM: powerN * -1,
@@ -29,7 +29,7 @@ func addNewWavePacketsBasedOnSymmetry(term *formula.EisensteinFormulaTerm, desir
 		})
 	}
 	if desiredSymmetry.P6 {
-		newWavePackets = append(newWavePackets, &Formula{
+		newWavePackets = append(newWavePackets, &WavePacket{
 			Terms: []*formula.EisensteinFormulaTerm{
 				{
 					PowerM: powerM * -1,
@@ -40,7 +40,7 @@ func addNewWavePacketsBasedOnSymmetry(term *formula.EisensteinFormulaTerm, desir
 		})
 	}
 	if desiredSymmetry.P6m {
-		newWavePackets = append(newWavePackets, &Formula{
+		newWavePackets = append(newWavePackets, &WavePacket{
 			Terms: []*formula.EisensteinFormulaTerm{
 				{
 					PowerM: powerM * -1,
@@ -49,7 +49,7 @@ func addNewWavePacketsBasedOnSymmetry(term *formula.EisensteinFormulaTerm, desir
 			},
 			Multiplier: term.Multiplier,
 		})
-		newWavePackets = append(newWavePackets, &Formula{
+		newWavePackets = append(newWavePackets, &WavePacket{
 			Terms: []*formula.EisensteinFormulaTerm{
 				{
 					PowerM: powerN,
@@ -58,7 +58,7 @@ func addNewWavePacketsBasedOnSymmetry(term *formula.EisensteinFormulaTerm, desir
 			},
 			Multiplier: term.Multiplier,
 		})
-		newWavePackets = append(newWavePackets, &Formula{
+		newWavePackets = append(newWavePackets, &WavePacket{
 			Terms: []*formula.EisensteinFormulaTerm{
 				{
 					PowerM: powerN * -1,
@@ -76,16 +76,32 @@ func addNewWavePacketsBasedOnSymmetry(term *formula.EisensteinFormulaTerm, desir
 			multiplierMaybeNegatedBasedOnSum *= -1
 		}
 
-		newWavePackets = append(newWavePackets, &Formula{
+		newWavePackets = append(newWavePackets, &WavePacket{
 			Terms: []*formula.EisensteinFormulaTerm{
 				{
 					PowerM: powerN,
 					PowerN: powerM,
+					Multiplier: multiplierMaybeNegatedBasedOnSum,
 				},
 			},
-			Multiplier: multiplierMaybeNegatedBasedOnSum,
+			Multiplier: term.Multiplier,
 		})
 	}
 
 	return newWavePackets
 }
+
+// SymmetryType encodes all possible symmetries for wallpaper patterns.
+type SymmetryType string
+
+// All possible symmetries for wallpaper patterns, based on crystallography.
+const (
+	P3 SymmetryType	= "p3"
+	P3m1 SymmetryType	= "p3m1"
+	P31m SymmetryType	= "p31m"
+	P6 SymmetryType	= "p6"
+	P6m SymmetryType	= "p6m"
+	P4 SymmetryType = "p4"
+	P4m SymmetryType = "p4m"
+	P4g SymmetryType = "p4g"
+)

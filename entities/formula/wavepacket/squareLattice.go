@@ -35,24 +35,6 @@ func (squareWaveFormula *SquareWallpaperFormula) Calculate(z complex128) *formul
 	return squareWaveFormula.Formula.Calculate(z)
 }
 
-// FindSymmetries returns an object that tracks all of the symmetries found
-//  in this formula.
-func (squareWaveFormula *SquareWallpaperFormula) FindSymmetries() *Symmetry {
-	foundSymmetries := Symmetry{
-		P4: true,
-	}
-
-	symmetryFound := FindWaveRelationships(squareWaveFormula.Formula.WavePackets)
-	if symmetryFound.PlusMPlusN {
-		foundSymmetries.P4m = true
-	}
-	if symmetryFound.MaybeNegateBasedOnSumPlusMPlusN {
-		foundSymmetries.P4g = true
-	}
-
-	return &foundSymmetries
-}
-
 // NewSquareWallpaperFormulaFromJSON reads the data and returns a formula term from it.
 func NewSquareWallpaperFormulaFromJSON(data []byte) (*SquareWallpaperFormula, error) {
 	formula, err := NewWallpaperFormulaFromJSON(data)
@@ -85,7 +67,7 @@ func NewSquareWallpaperFormulaFromMarshalObject(marshalObject WallpaperFormulaMa
 	}
 }
 
-// NewSquareWallpaperFormulaWithSymmetry will try to create a new Hexagonal Wallpaper Formula
+// NewSquareWallpaperFormulaWithSymmetry will try to create a new Hexagonal Wallpaper WavePacket
 //   with the desired Terms, Multiplier and Symmetry.
 func NewSquareWallpaperFormulaWithSymmetry(terms []*formula.EisensteinFormulaTerm, wallpaperMultiplier complex128, desiredSymmetry *Symmetry) (*SquareWallpaperFormula, error) {
 	err := checkForIncompatibleSquareSymmetries(terms, desiredSymmetry)
@@ -93,11 +75,11 @@ func NewSquareWallpaperFormulaWithSymmetry(terms []*formula.EisensteinFormulaTer
 		return nil, err
 	}
 
-	newWavePackets := []*Formula{}
+	newWavePackets := []*WavePacket{}
 	for _, term := range terms {
 		newWavePackets = append(
 			newWavePackets,
-			&Formula{
+			&WavePacket{
 				Terms:      []*formula.EisensteinFormulaTerm{term},
 				Multiplier: term.Multiplier,
 			},
@@ -131,4 +113,29 @@ func checkForIncompatibleSquareSymmetries(terms []*formula.EisensteinFormulaTerm
 		return errors.New("invalid desired symmetry")
 	}
 	return nil
+}
+
+// HasSymmetry returns true if the WavePackets involved form symmetry.
+func (squareWaveFormula *SquareWallpaperFormula) HasSymmetry(desiredSymmetry SymmetryType) bool {
+	if desiredSymmetry == P4 {
+		return true
+	}
+
+	numberOfWavePackets := len(squareWaveFormula.Formula.WavePackets)
+	if numberOfWavePackets < 2 || numberOfWavePackets % 2 == 1 {
+		return false
+	}
+
+	desiredSymmetryToCoefficients := map[SymmetryType][]coefficient.Relationship {
+		P4m: {coefficient.PlusMPlusN},
+		P4g: {coefficient.PlusMPlusNMaybeFlipScale},
+	}
+
+	coefficientsToFind := desiredSymmetryToCoefficients[desiredSymmetry]
+
+	if coefficientsToFind == nil {
+		return false
+	}
+
+	return CanWavePacketsBeGroupedAmongCoefficientRelationships(squareWaveFormula.Formula.WavePackets, coefficientsToFind)
 }

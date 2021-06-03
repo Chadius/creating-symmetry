@@ -10,14 +10,14 @@ import (
 
 // WallpaperFormulaMarshalled can be marshalled into Wave Packet formulas
 type WallpaperFormulaMarshalled struct {
-	WavePackets []*FormulaMarshalable			`json:"wave_packets" yaml:"wave_packets"`
-	Multiplier utility.ComplexNumberForMarshal	`json:"multiplier" yaml:"multiplier"`
-	Lattice *formula.LatticeVectorPairMarshal `json:"lattice" yaml:"lattice"`
+	WavePackets []*Marshal                     `json:"wave_packets" yaml:"wave_packets"`
+	Multiplier utility.ComplexNumberForMarshal `json:"multiplier" yaml:"multiplier"`
+	Lattice *formula.LatticeVectorPairMarshal  `json:"lattice" yaml:"lattice"`
 }
 
 // WallpaperFormula uses wave packets that enforce rotation symmetry.
 type WallpaperFormula struct {
-	WavePackets []*Formula
+	WavePackets []*WavePacket
 	Multiplier complex128
 	Lattice *formula.LatticeVectorPair
 }
@@ -37,13 +37,15 @@ func (wallpaperFormula *WallpaperFormula) SetUp(
 
 		newPairings := baseCoefficientPairing.GenerateCoefficientSets(lockedRelationships)
 
-		wavePacket.Terms[0].Multiplier = complex(1, 0)
+		if real(wavePacket.Terms[0].Multiplier) == 0 && imag(wavePacket.Terms[0].Multiplier) == 0 {
+			wavePacket.Terms[0].Multiplier = complex(1, 0)
+		}
 
 		for _, newCoefficientPair := range newPairings {
-			baseMultiplier := complex(1,0)
+			baseMultiplier := complex(real(wavePacket.Terms[0].Multiplier), imag(wavePacket.Terms[0].Multiplier))
 
 			if newCoefficientPair.NegateMultiplier == true {
-				baseMultiplier = complex(-1, 0)
+				baseMultiplier = complex(-1 * real(wavePacket.Terms[0].Multiplier), -1 * imag(wavePacket.Terms[0].Multiplier))
 			}
 			newEisenstein := &formula.EisensteinFormulaTerm{
 				PowerN:         newCoefficientPair.PowerN,
@@ -99,9 +101,9 @@ func newWallpaperFormulaFromDatastream(data []byte, unmarshal utility.UnmarshalF
 	return formula, nil
 }
 
-// NewWallpaperFormulaFromMarshalObject uses a marshalled object to create a new Wave Formula.
+// NewWallpaperFormulaFromMarshalObject uses a marshalled object to create a new Wave WavePacket.
 func NewWallpaperFormulaFromMarshalObject(marshalObject WallpaperFormulaMarshalled) *WallpaperFormula {
-	wavePackets := []*Formula{}
+	wavePackets := []*WavePacket{}
 	for _,packet := range marshalObject.WavePackets {
 		newWavePacket := NewWaveFormulaFromMarshalObject(*packet)
 		wavePackets = append(wavePackets, newWavePacket)
