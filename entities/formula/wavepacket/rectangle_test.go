@@ -141,101 +141,324 @@ formula:
 	checker.Assert(RectangularFormula.Formula.WavePackets[0].Terms[0].PowerM, Equals, -10)
 }
 
-//type RectangularWaveSymmetry struct {
-//	baseWavePacket *wavepacket.WavePacket
-//}
-//
-//var _ = Suite(&RectangularWaveSymmetry{})
-//
-//func (suite *RectangularWaveSymmetry) SetUpTest(checker *C) {
-//	suite.baseWavePacket = &wavepacket.WavePacket{
-//		Terms:[]*formula.EisensteinFormulaTerm{
-//			{
-//				PowerN:         8,
-//				PowerM:         -3,
-//			},
-//		},
-//		Multiplier: complex(1, 0),
-//	}
-//}
-//
-//func (suite *RectangularWaveSymmetry) TestNoSymmetryFound(checker *C) {
-//	RectangularFormula := wavepacket.RectangularWallpaperFormula{
-//		Formula: &wavepacket.WallpaperFormula{
-//			WavePackets: []*wavepacket.WavePacket{
-//				suite.baseWavePacket,
-//			},
-//			Multiplier: complex(1, 0),
-//		},
-//	}
-//
-//	RectangularFormula.SetUp()
-//	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Cm), Equals, false)
-//	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Cmm), Equals, false)
-//}
-//
-//func (suite *RectangularWaveSymmetry) TestCm(checker *C) {
-//	RectangularFormula := wavepacket.RectangularWallpaperFormula{
-//		Formula: &wavepacket.WallpaperFormula{
-//			WavePackets: []*wavepacket.WavePacket{
-//				suite.baseWavePacket,
-//				{
-//					Terms: []*formula.EisensteinFormulaTerm{
-//						{
-//							PowerN:         suite.baseWavePacket.Terms[0].PowerM,
-//							PowerM:         suite.baseWavePacket.Terms[0].PowerN,
-//						},
-//					},
-//				},
-//			},
-//			Multiplier: complex(1, 0),
-//		},
-//	}
-//
-//	RectangularFormula.SetUp()
-//	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Cm), Equals, true)
-//	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Cmm), Equals, false)
-//}
-//
-//func (suite *RectangularWaveSymmetry) TestCmm(checker *C) {
-//	RectangularFormula := wavepacket.RectangularWallpaperFormula{
-//		Formula: &wavepacket.WallpaperFormula{
-//			WavePackets: []*wavepacket.WavePacket{
-//				suite.baseWavePacket,
-//				{
-//					Terms: []*formula.EisensteinFormulaTerm{
-//						{
-//							PowerN:         suite.baseWavePacket.Terms[0].PowerM,
-//							PowerM:         suite.baseWavePacket.Terms[0].PowerN,
-//						},
-//					},
-//				},
-//				{
-//					Terms: []*formula.EisensteinFormulaTerm{
-//						{
-//							PowerN:         suite.baseWavePacket.Terms[0].PowerM * -1,
-//							PowerM:         suite.baseWavePacket.Terms[0].PowerN * -1,
-//						},
-//					},
-//				},
-//				{
-//					Terms: []*formula.EisensteinFormulaTerm{
-//						{
-//							PowerN:         suite.baseWavePacket.Terms[0].PowerN * -1,
-//							PowerM:         suite.baseWavePacket.Terms[0].PowerM * -1,
-//						},
-//					},
-//				},
-//			},
-//			Multiplier: complex(1, 0),
-//		},
-//	}
-//
-//	RectangularFormula.SetUp()
-//	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Cm), Equals, true)
-//	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Cmm), Equals, true)
-//}
-//
+type RectangularWaveSymmetry struct {
+	baseWavePacketWithEvenPowerNAndOddPowerSum *wavepacket.WavePacket
+	baseWavePacketWithOddPowerNAndEvenPowerSum *wavepacket.WavePacket
+}
+
+var _ = Suite(&RectangularWaveSymmetry{})
+
+func (suite *RectangularWaveSymmetry) SetUpTest(checker *C) {
+	suite.baseWavePacketWithEvenPowerNAndOddPowerSum = &wavepacket.WavePacket{
+		Terms:[]*formula.EisensteinFormulaTerm{
+			{
+				PowerN:         8,
+				PowerM:         -3,
+				Multiplier: complex(1, 0),
+			},
+		},
+		Multiplier: complex(1, 0),
+	}
+
+	suite.baseWavePacketWithOddPowerNAndEvenPowerSum = &wavepacket.WavePacket{
+		Terms:[]*formula.EisensteinFormulaTerm{
+			{
+				PowerN:         7,
+				PowerM:         -3,
+				Multiplier: complex(1, 0),
+			},
+		},
+		Multiplier: complex(1, 0),
+	}
+}
+
+func (suite *RectangularWaveSymmetry) TestNoSymmetryFound(checker *C) {
+	rectangularFormula := wavepacket.RectangularWallpaperFormula{
+		Formula: &wavepacket.WallpaperFormula{
+			WavePackets: []*wavepacket.WavePacket{
+				suite.baseWavePacketWithEvenPowerNAndOddPowerSum,
+			},
+			Multiplier: complex(1, 0),
+		},
+	}
+
+	rectangularFormula.SetUp()
+	checker.Assert(rectangularFormula.HasSymmetry(wavepacket.Pm), Equals, false)
+	checker.Assert(rectangularFormula.HasSymmetry(wavepacket.Pg), Equals, false)
+	checker.Assert(rectangularFormula.HasSymmetry(wavepacket.Pmm), Equals, false)
+	checker.Assert(rectangularFormula.HasSymmetry(wavepacket.Pmg), Equals, false)
+	checker.Assert(rectangularFormula.HasSymmetry(wavepacket.Pgg), Equals, false)
+}
+
+func (suite *RectangularWaveSymmetry) TestPm(checker *C) {
+	rectangularFormula := wavepacket.RectangularWallpaperFormula{
+		Formula: &wavepacket.WallpaperFormula{
+			WavePackets: []*wavepacket.WavePacket{
+				suite.baseWavePacketWithEvenPowerNAndOddPowerSum,
+				{
+					Terms: []*formula.EisensteinFormulaTerm{
+						{
+							PowerN:         suite.baseWavePacketWithEvenPowerNAndOddPowerSum.Terms[0].PowerN,
+							PowerM:         suite.baseWavePacketWithEvenPowerNAndOddPowerSum.Terms[0].PowerM * -1,
+							Multiplier: suite.baseWavePacketWithEvenPowerNAndOddPowerSum.Multiplier,
+						},
+					},
+				},
+			},
+			Multiplier: complex(1, 0),
+		},
+	}
+
+	rectangularFormula.SetUp()
+	checker.Assert(rectangularFormula.HasSymmetry(wavepacket.Pm), Equals, true)
+	checker.Assert(rectangularFormula.HasSymmetry(wavepacket.Pg), Equals, false)
+	checker.Assert(rectangularFormula.HasSymmetry(wavepacket.Pmm), Equals, false)
+	checker.Assert(rectangularFormula.HasSymmetry(wavepacket.Pmg), Equals, false)
+	checker.Assert(rectangularFormula.HasSymmetry(wavepacket.Pgg), Equals, false)
+}
+
+func (suite *RectangularWaveSymmetry) TestPg(checker *C) {
+	rectangularFormulaWithEvenPowerN := wavepacket.RectangularWallpaperFormula{
+		Formula: &wavepacket.WallpaperFormula{
+			WavePackets: []*wavepacket.WavePacket{
+				suite.baseWavePacketWithEvenPowerNAndOddPowerSum,
+				{
+					Terms: []*formula.EisensteinFormulaTerm{
+						{
+							PowerN:         suite.baseWavePacketWithEvenPowerNAndOddPowerSum.Terms[0].PowerN,
+							PowerM:         suite.baseWavePacketWithEvenPowerNAndOddPowerSum.Terms[0].PowerM * -1,
+							Multiplier: suite.baseWavePacketWithEvenPowerNAndOddPowerSum.Multiplier,
+						},
+					},
+				},
+			},
+			Multiplier: complex(1, 0),
+		},
+	}
+
+	rectangularFormulaWithEvenPowerN.SetUp()
+	checker.Assert(rectangularFormulaWithEvenPowerN.HasSymmetry(wavepacket.Pm), Equals, true)
+	checker.Assert(rectangularFormulaWithEvenPowerN.HasSymmetry(wavepacket.Pg), Equals, true)
+	checker.Assert(rectangularFormulaWithEvenPowerN.HasSymmetry(wavepacket.Pmm), Equals, false)
+	checker.Assert(rectangularFormulaWithEvenPowerN.HasSymmetry(wavepacket.Pmg), Equals, false)
+	checker.Assert(rectangularFormulaWithEvenPowerN.HasSymmetry(wavepacket.Pgg), Equals, false)
+
+	rectangularFormulaWithOddPowerN := wavepacket.RectangularWallpaperFormula{
+		Formula: &wavepacket.WallpaperFormula{
+			WavePackets: []*wavepacket.WavePacket{
+				suite.baseWavePacketWithOddPowerNAndEvenPowerSum,
+				{
+					Terms: []*formula.EisensteinFormulaTerm{
+						{
+							PowerN:         suite.baseWavePacketWithOddPowerNAndEvenPowerSum.Terms[0].PowerN,
+							PowerM:         suite.baseWavePacketWithOddPowerNAndEvenPowerSum.Terms[0].PowerM * -1,
+							Multiplier: 	suite.baseWavePacketWithOddPowerNAndEvenPowerSum.Multiplier * -1,
+						},
+					},
+				},
+			},
+			Multiplier: complex(1, 0),
+		},
+	}
+
+	rectangularFormulaWithOddPowerN.SetUp()
+	checker.Assert(rectangularFormulaWithOddPowerN.HasSymmetry(wavepacket.Pm), Equals, false)
+	checker.Assert(rectangularFormulaWithOddPowerN.HasSymmetry(wavepacket.Pg), Equals, true)
+	checker.Assert(rectangularFormulaWithOddPowerN.HasSymmetry(wavepacket.Pmm), Equals, false)
+	checker.Assert(rectangularFormulaWithOddPowerN.HasSymmetry(wavepacket.Pmg), Equals, false)
+	checker.Assert(rectangularFormulaWithOddPowerN.HasSymmetry(wavepacket.Pgg), Equals, false)
+}
+
+func (suite *RectangularWaveSymmetry) TestPmmAndPmgWithEvenPowerN(checker *C) {
+	rectangularFormula := wavepacket.RectangularWallpaperFormula{
+		Formula: &wavepacket.WallpaperFormula{
+			WavePackets: []*wavepacket.WavePacket{
+				suite.baseWavePacketWithEvenPowerNAndOddPowerSum,
+				{
+					Terms:[]*formula.EisensteinFormulaTerm{
+						{
+							PowerN:         suite.baseWavePacketWithEvenPowerNAndOddPowerSum.Terms[0].PowerN * -1,
+							PowerM:         suite.baseWavePacketWithEvenPowerNAndOddPowerSum.Terms[0].PowerM * -1,
+							Multiplier: complex(1, 0),
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+				{
+					Terms:[]*formula.EisensteinFormulaTerm{
+						{
+							PowerN:         suite.baseWavePacketWithEvenPowerNAndOddPowerSum.Terms[0].PowerN,
+							PowerM:         suite.baseWavePacketWithEvenPowerNAndOddPowerSum.Terms[0].PowerM * -1,
+							Multiplier: complex(1, 0),
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+				{
+					Terms:[]*formula.EisensteinFormulaTerm{
+						{
+							PowerN:         suite.baseWavePacketWithEvenPowerNAndOddPowerSum.Terms[0].PowerN * -1,
+							PowerM:         suite.baseWavePacketWithEvenPowerNAndOddPowerSum.Terms[0].PowerM,
+							Multiplier: complex(1, 0),
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+			},
+			Multiplier: complex(1, 0),
+		},
+	}
+
+	rectangularFormula.SetUp()
+	checker.Assert(rectangularFormula.HasSymmetry(wavepacket.Pm), Equals, true)
+	checker.Assert(rectangularFormula.HasSymmetry(wavepacket.Pg), Equals, true)
+	checker.Assert(rectangularFormula.HasSymmetry(wavepacket.Pmm), Equals, true)
+	checker.Assert(rectangularFormula.HasSymmetry(wavepacket.Pmg), Equals, true)
+	checker.Assert(rectangularFormula.HasSymmetry(wavepacket.Pgg), Equals, false)
+}
+
+func (suite *RectangularWaveSymmetry) TestPmgWithOddPowerN(checker *C) {
+	rectangularFormulaWithOddPowerN := wavepacket.RectangularWallpaperFormula{
+		Formula: &wavepacket.WallpaperFormula{
+			WavePackets: []*wavepacket.WavePacket{
+				suite.baseWavePacketWithOddPowerNAndEvenPowerSum,
+				{
+					Terms:[]*formula.EisensteinFormulaTerm{
+						{
+							PowerN:         suite.baseWavePacketWithOddPowerNAndEvenPowerSum.Terms[0].PowerN * -1,
+							PowerM:         suite.baseWavePacketWithOddPowerNAndEvenPowerSum.Terms[0].PowerM * -1,
+							Multiplier: suite.baseWavePacketWithOddPowerNAndEvenPowerSum.Multiplier,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+				{
+					Terms:[]*formula.EisensteinFormulaTerm{
+						{
+							PowerN:         suite.baseWavePacketWithOddPowerNAndEvenPowerSum.Terms[0].PowerN,
+							PowerM:         suite.baseWavePacketWithOddPowerNAndEvenPowerSum.Terms[0].PowerM * -1,
+							Multiplier: suite.baseWavePacketWithOddPowerNAndEvenPowerSum.Multiplier * -1,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+				{
+					Terms:[]*formula.EisensteinFormulaTerm{
+						{
+							PowerN:         suite.baseWavePacketWithOddPowerNAndEvenPowerSum.Terms[0].PowerN * -1,
+							PowerM:         suite.baseWavePacketWithOddPowerNAndEvenPowerSum.Terms[0].PowerM,
+							Multiplier: suite.baseWavePacketWithOddPowerNAndEvenPowerSum.Multiplier * -1,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+			},
+			Multiplier: complex(1, 0),
+		},
+	}
+
+	rectangularFormulaWithOddPowerN.SetUp()
+	checker.Assert(rectangularFormulaWithOddPowerN.HasSymmetry(wavepacket.Pm), Equals, false)
+	checker.Assert(rectangularFormulaWithOddPowerN.HasSymmetry(wavepacket.Pg), Equals, true)
+	checker.Assert(rectangularFormulaWithOddPowerN.HasSymmetry(wavepacket.Pmm), Equals, false)
+	checker.Assert(rectangularFormulaWithOddPowerN.HasSymmetry(wavepacket.Pmg), Equals, true)
+	checker.Assert(rectangularFormulaWithOddPowerN.HasSymmetry(wavepacket.Pgg), Equals, false)
+}
+
+func (suite *RectangularWaveSymmetry) TestPgg(checker *C) {
+	rectangularFormulaWithOddPowerSum := wavepacket.RectangularWallpaperFormula{
+		Formula: &wavepacket.WallpaperFormula{
+			WavePackets: []*wavepacket.WavePacket{
+				suite.baseWavePacketWithEvenPowerNAndOddPowerSum,
+				{
+					Terms:[]*formula.EisensteinFormulaTerm{
+						{
+							PowerN:         suite.baseWavePacketWithEvenPowerNAndOddPowerSum.Terms[0].PowerN * -1,
+							PowerM:         suite.baseWavePacketWithEvenPowerNAndOddPowerSum.Terms[0].PowerM * -1,
+							Multiplier: suite.baseWavePacketWithEvenPowerNAndOddPowerSum.Multiplier,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+				{
+					Terms:[]*formula.EisensteinFormulaTerm{
+						{
+							PowerN:         suite.baseWavePacketWithEvenPowerNAndOddPowerSum.Terms[0].PowerN,
+							PowerM:         suite.baseWavePacketWithEvenPowerNAndOddPowerSum.Terms[0].PowerM * -1,
+							Multiplier: -1 * suite.baseWavePacketWithEvenPowerNAndOddPowerSum.Multiplier,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+				{
+					Terms:[]*formula.EisensteinFormulaTerm{
+						{
+							PowerN:         suite.baseWavePacketWithEvenPowerNAndOddPowerSum.Terms[0].PowerN * -1,
+							PowerM:         suite.baseWavePacketWithEvenPowerNAndOddPowerSum.Terms[0].PowerM,
+							Multiplier: -1 * suite.baseWavePacketWithEvenPowerNAndOddPowerSum.Multiplier,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+			},
+			Multiplier: complex(1, 0),
+		},
+	}
+
+	rectangularFormulaWithOddPowerSum.SetUp()
+	checker.Assert(rectangularFormulaWithOddPowerSum.HasSymmetry(wavepacket.Pm), Equals, false)
+	checker.Assert(rectangularFormulaWithOddPowerSum.HasSymmetry(wavepacket.Pg), Equals, false)
+	checker.Assert(rectangularFormulaWithOddPowerSum.HasSymmetry(wavepacket.Pmm), Equals, false)
+	checker.Assert(rectangularFormulaWithOddPowerSum.HasSymmetry(wavepacket.Pmg), Equals, false)
+	checker.Assert(rectangularFormulaWithOddPowerSum.HasSymmetry(wavepacket.Pgg), Equals, true)
+
+	rectangularFormulaWithEvenPowerSum := wavepacket.RectangularWallpaperFormula{
+		Formula: &wavepacket.WallpaperFormula{
+			WavePackets: []*wavepacket.WavePacket{
+				suite.baseWavePacketWithOddPowerNAndEvenPowerSum,
+				{
+					Terms:[]*formula.EisensteinFormulaTerm{
+						{
+							PowerN:         suite.baseWavePacketWithOddPowerNAndEvenPowerSum.Terms[0].PowerN * -1,
+							PowerM:         suite.baseWavePacketWithOddPowerNAndEvenPowerSum.Terms[0].PowerM * -1,
+							Multiplier: suite.baseWavePacketWithOddPowerNAndEvenPowerSum.Multiplier,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+				{
+					Terms:[]*formula.EisensteinFormulaTerm{
+						{
+							PowerN:         suite.baseWavePacketWithOddPowerNAndEvenPowerSum.Terms[0].PowerN,
+							PowerM:         suite.baseWavePacketWithOddPowerNAndEvenPowerSum.Terms[0].PowerM * -1,
+							Multiplier: suite.baseWavePacketWithOddPowerNAndEvenPowerSum.Multiplier,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+				{
+					Terms:[]*formula.EisensteinFormulaTerm{
+						{
+							PowerN:         suite.baseWavePacketWithOddPowerNAndEvenPowerSum.Terms[0].PowerN * -1,
+							PowerM:         suite.baseWavePacketWithOddPowerNAndEvenPowerSum.Terms[0].PowerM,
+							Multiplier: suite.baseWavePacketWithOddPowerNAndEvenPowerSum.Multiplier,
+						},
+					},
+					Multiplier: complex(1, 0),
+				},
+			},
+			Multiplier: complex(1, 0),
+		},
+	}
+
+	rectangularFormulaWithEvenPowerSum.SetUp()
+	checker.Assert(rectangularFormulaWithEvenPowerSum.HasSymmetry(wavepacket.Pm), Equals, true)
+	checker.Assert(rectangularFormulaWithEvenPowerSum.HasSymmetry(wavepacket.Pg), Equals, false)
+	checker.Assert(rectangularFormulaWithEvenPowerSum.HasSymmetry(wavepacket.Pmm), Equals, true)
+	checker.Assert(rectangularFormulaWithEvenPowerSum.HasSymmetry(wavepacket.Pmg), Equals, false)
+	checker.Assert(rectangularFormulaWithEvenPowerSum.HasSymmetry(wavepacket.Pgg), Equals, true)
+}
+
 //type RectangularCreatedWithDesiredSymmetry struct {
 //	singleEisensteinFormulaTerm []*formula.EisensteinFormulaTerm
 //	wallpaperMultiplier complex128

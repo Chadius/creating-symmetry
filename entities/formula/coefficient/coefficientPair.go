@@ -12,7 +12,8 @@ type Pairing struct {
 func (pairing Pairing) GenerateCoefficientSets(relationships []Relationship) []*Pairing {
 	pairs := []*Pairing{}
 
-	negateMultiplier := (pairing.PowerN + pairing.PowerM) % 2 != 0
+	negateMultiplierIfPowerNIsOdd := pairing.PowerN % 2 != 0
+	negateMultiplierIfSumIsOdd := (pairing.PowerN + pairing.PowerM) % 2 != 0
 
 	pairingByRelationship := map[Relationship]*Pairing{
 		PlusNPlusM: {
@@ -26,9 +27,9 @@ func (pairing Pairing) GenerateCoefficientSets(relationships []Relationship) []*
 			NegateMultiplier: false,
 		},
 		PlusMPlusNMaybeFlipScale: {
-			PowerN:     pairing.PowerM,
-			PowerM:     pairing.PowerN,
-			NegateMultiplier: negateMultiplier,
+			PowerN:           pairing.PowerM,
+			PowerM:           pairing.PowerN,
+			NegateMultiplier: negateMultiplierIfSumIsOdd,
 		},
 		MinusNMinusM: {
 			PowerN:     -1 * pairing.PowerN,
@@ -41,9 +42,9 @@ func (pairing Pairing) GenerateCoefficientSets(relationships []Relationship) []*
 			NegateMultiplier: false,
 		},
 		MinusMMinusNMaybeFlipScale: {
-			PowerN:     -1 * pairing.PowerM,
-			PowerM:     -1 * pairing.PowerN,
-			NegateMultiplier: negateMultiplier,
+			PowerN:           -1 * pairing.PowerM,
+			PowerM:           -1 * pairing.PowerN,
+			NegateMultiplier: negateMultiplierIfSumIsOdd,
 		},
 		PlusMMinusSumNAndM: {
 			PowerN: pairing.PowerM,
@@ -55,6 +56,31 @@ func (pairing Pairing) GenerateCoefficientSets(relationships []Relationship) []*
 			PowerM: pairing.PowerM,
 			NegateMultiplier: false,
 		},
+		PlusNMinusM: {
+			PowerN: pairing.PowerN,
+			PowerM: -1 * pairing.PowerM,
+			NegateMultiplier: false,
+		},
+		PlusNMinusMNegateMultiplierIfOddPowerN: {
+			PowerN: pairing.PowerN,
+			PowerM: -1 * pairing.PowerM,
+			NegateMultiplier: negateMultiplierIfPowerNIsOdd,
+		},
+		PlusNMinusMNegateMultiplierIfOddPowerSum: {
+			PowerN: pairing.PowerN,
+			PowerM: -1 * pairing.PowerM,
+			NegateMultiplier: negateMultiplierIfSumIsOdd,
+		},
+		MinusNPlusMNegateMultiplierIfOddPowerN: {
+			PowerN: -1 * pairing.PowerN,
+			PowerM: pairing.PowerM,
+			NegateMultiplier: negateMultiplierIfPowerNIsOdd,
+		},
+		MinusNPlusMNegateMultiplierIfOddPowerSum: {
+			PowerN: -1 * pairing.PowerN,
+			PowerM: pairing.PowerM,
+			NegateMultiplier: negateMultiplierIfSumIsOdd,
+		},
 		PlusMMinusN: {
 			PowerN: pairing.PowerM,
 			PowerM: -1 * pairing.PowerN,
@@ -63,6 +89,11 @@ func (pairing Pairing) GenerateCoefficientSets(relationships []Relationship) []*
 		MinusMPlusN: {
 			PowerN: -1 * pairing.PowerM,
 			PowerM: pairing.PowerN,
+			NegateMultiplier: false,
+		},
+		MinusNPlusM: {
+			PowerN:     -1 * pairing.PowerN,
+			PowerM:     pairing.PowerM,
 			NegateMultiplier: false,
 		},
 	}
@@ -90,14 +121,20 @@ type Relationship string
 //	 MaybeFlipScale will multiply the scale by -1 if N + M is odd.
 const (
 	PlusNPlusM                 Relationship = "+N+M"
-	PlusMPlusN                 Relationship             = "+M+N"
-	MinusNMinusM               Relationship             = "-N-M"
-	MinusMMinusN               Relationship             = "-M-N"
-	PlusMPlusNMaybeFlipScale   Relationship             = "+M+NF"
-	MinusMMinusNMaybeFlipScale Relationship             = "-M-NF"
-	PlusMMinusSumNAndM		Relationship				= "+M-(N+M)"
-	MinusSumNAndMPlusN		Relationship				= "-(N+M)+N"
-	PlusMMinusN Relationship = "+M-N"
-	MinusMPlusN Relationship = "-M+N"
+	PlusMPlusN                             Relationship = "+M+N"
+	MinusNMinusM                           Relationship = "-N-M"
+	MinusMMinusN                           Relationship = "-M-N"
+	PlusMPlusNMaybeFlipScale               Relationship = "+M+NF"
+	MinusMMinusNMaybeFlipScale             Relationship = "-M-NF"
+	PlusMMinusSumNAndM                     Relationship = "+M-(N+M)"
+	MinusSumNAndMPlusN                     Relationship = "-(N+M)+N"
+	PlusMMinusN                            Relationship = "+M-N"
+	MinusMPlusN                            Relationship = "-M+N"
+	PlusNMinusM                            Relationship = "+N-M"
+	PlusNMinusMNegateMultiplierIfOddPowerN Relationship = "+N-MF(N)"
+	MinusNPlusMNegateMultiplierIfOddPowerN Relationship = "-N+MF(N)"
+	MinusNPlusM Relationship = "-N+M"
+	PlusNMinusMNegateMultiplierIfOddPowerSum Relationship = "+N-MF(N+M)"
+	MinusNPlusMNegateMultiplierIfOddPowerSum Relationship = "-N+MF(N+M)"
 )
 

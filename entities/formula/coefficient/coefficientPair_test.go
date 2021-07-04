@@ -152,3 +152,114 @@ func (suite *CoefficientPairFeatures) TestMinusMPlusN(checker *C) {
 	checker.Assert(newSets[0].PowerM, Equals, 1)
 	checker.Assert(newSets[0].NegateMultiplier, Equals, false)
 }
+
+func (suite *CoefficientPairFeatures) TestPlusNMinusM(checker *C) {
+	newSets := suite.evenSumPair.GenerateCoefficientSets([]coefficient.Relationship{
+		coefficient.PlusNMinusM,
+	})
+
+	checker.Assert(newSets, HasLen, 1)
+	checker.Assert(newSets[0].PowerN, Equals, 1)
+	checker.Assert(newSets[0].PowerM, Equals, -3)
+	checker.Assert(newSets[0].NegateMultiplier, Equals, false)
+}
+
+func (suite *CoefficientPairFeatures) TestPlusNMinusMNegateMultiplierIfOddPowerN(checker *C) {
+	newSetsWithOddPowerN := suite.evenSumPair.GenerateCoefficientSets([]coefficient.Relationship{
+		coefficient.PlusNMinusMNegateMultiplierIfOddPowerN,
+	})
+
+	checker.Assert(newSetsWithOddPowerN, HasLen, 1)
+	checker.Assert(newSetsWithOddPowerN[0].PowerN, Equals, 1)
+	checker.Assert(newSetsWithOddPowerN[0].PowerM, Equals, -3)
+	checker.Assert(newSetsWithOddPowerN[0].NegateMultiplier, Equals, true)
+
+	coefficientPairWithEvenPowerN := coefficient.Pairing{
+		PowerN: 2,
+		PowerM: 3,
+	}
+	newSetsWithEvenPowerN := coefficientPairWithEvenPowerN.GenerateCoefficientSets([]coefficient.Relationship{
+		coefficient.PlusNMinusMNegateMultiplierIfOddPowerN,
+	})
+
+	checker.Assert(newSetsWithEvenPowerN, HasLen, 1)
+	checker.Assert(newSetsWithEvenPowerN[0].PowerN, Equals, 2)
+	checker.Assert(newSetsWithEvenPowerN[0].PowerM, Equals, -3)
+	checker.Assert(newSetsWithEvenPowerN[0].NegateMultiplier, Equals, false)
+}
+
+func (suite *CoefficientPairFeatures) TestMinusNPlusMNegateMultiplierIfOddPowerN(checker *C) {
+	newSetsWithOddPowerN := suite.evenSumPair.GenerateCoefficientSets([]coefficient.Relationship{
+		coefficient.MinusNPlusMNegateMultiplierIfOddPowerN,
+	})
+
+	checker.Assert(newSetsWithOddPowerN, HasLen, 1)
+	checker.Assert(newSetsWithOddPowerN[0].PowerN, Equals, -1)
+	checker.Assert(newSetsWithOddPowerN[0].PowerM, Equals, 3)
+	checker.Assert(newSetsWithOddPowerN[0].NegateMultiplier, Equals, true)
+
+	coefficientPairWithEvenPowerN := coefficient.Pairing{
+		PowerN: 2,
+		PowerM: 3,
+	}
+	newSetsWithEvenPowerN := coefficientPairWithEvenPowerN.GenerateCoefficientSets([]coefficient.Relationship{
+		coefficient.MinusNPlusMNegateMultiplierIfOddPowerN,
+	})
+
+	checker.Assert(newSetsWithEvenPowerN, HasLen, 1)
+	checker.Assert(newSetsWithEvenPowerN[0].PowerN, Equals, -2)
+	checker.Assert(newSetsWithEvenPowerN[0].PowerM, Equals, 3)
+	checker.Assert(newSetsWithEvenPowerN[0].NegateMultiplier, Equals, false)
+}
+
+func (suite *CoefficientPairFeatures) TestMinusNPlusM(checker *C) {
+	newSets := suite.evenSumPair.GenerateCoefficientSets([]coefficient.Relationship{
+		coefficient.MinusNPlusM,
+	})
+
+	checker.Assert(newSets, HasLen, 1)
+	checker.Assert(newSets[0].PowerN, Equals, -1)
+	checker.Assert(newSets[0].PowerM, Equals, 3)
+	checker.Assert(newSets[0].NegateMultiplier, Equals, false)
+}
+
+func (suite *CoefficientPairFeatures) TestPlusNMinusMNegateMultiplierIfOddPowerSum(checker *C) {
+	newSetsWithEvenSumPower := suite.evenSumPair.GenerateCoefficientSets([]coefficient.Relationship{
+		coefficient.PlusNMinusMNegateMultiplierIfOddPowerSum,
+	})
+
+	checker.Assert(newSetsWithEvenSumPower, HasLen, 1)
+	checker.Assert(newSetsWithEvenSumPower[0].PowerN, Equals, 1)
+	checker.Assert(newSetsWithEvenSumPower[0].PowerM, Equals, -3)
+	checker.Assert(newSetsWithEvenSumPower[0].NegateMultiplier, Equals, false)
+
+	newSetsWithOddSumPower := suite.oddSumPair.GenerateCoefficientSets([]coefficient.Relationship{
+		coefficient.PlusNMinusMNegateMultiplierIfOddPowerSum,
+	})
+
+	checker.Assert(newSetsWithOddSumPower, HasLen, 1)
+	checker.Assert(newSetsWithOddSumPower[0].PowerN, Equals, 1)
+	checker.Assert(newSetsWithOddSumPower[0].PowerM, Equals, -2)
+	checker.Assert(newSetsWithOddSumPower[0].NegateMultiplier, Equals, true)
+}
+
+func (suite *CoefficientPairFeatures) TestMinusNPlusMNegateMultiplierIfOddPowerSum(checker *C) {
+	newSetsWithOddPowerN := suite.evenSumPair.GenerateCoefficientSets([]coefficient.Relationship{
+		coefficient.MinusNPlusMNegateMultiplierIfOddPowerSum,
+	})
+
+	checker.Assert(newSetsWithOddPowerN, HasLen, 1)
+	checker.Assert(newSetsWithOddPowerN[0].PowerN, Equals, -1)
+	checker.Assert(newSetsWithOddPowerN[0].PowerM, Equals, 3)
+	checker.Assert(newSetsWithOddPowerN[0].NegateMultiplier, Equals, false)
+
+	newSetsWithOddSumPower := suite.oddSumPair.GenerateCoefficientSets([]coefficient.Relationship{
+		coefficient.MinusNPlusMNegateMultiplierIfOddPowerSum,
+	})
+
+	checker.Assert(newSetsWithOddSumPower, HasLen, 1)
+	checker.Assert(newSetsWithOddSumPower[0].PowerN, Equals, -1)
+	checker.Assert(newSetsWithOddSumPower[0].PowerM, Equals, 2)
+	checker.Assert(newSetsWithOddSumPower[0].NegateMultiplier, Equals, true)
+}
+

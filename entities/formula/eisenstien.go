@@ -92,6 +92,12 @@ func GetAllPossibleTermRelationships(term1, term2 *EisensteinFormulaTerm) []coef
 		coefficient.MinusSumNAndMPlusN,
 		coefficient.PlusMMinusN,
 		coefficient.MinusMPlusN,
+		coefficient.PlusNMinusM,
+		coefficient.MinusNPlusM,
+		coefficient.PlusNMinusMNegateMultiplierIfOddPowerN,
+		coefficient.MinusNPlusMNegateMultiplierIfOddPowerN,
+		coefficient.PlusNMinusMNegateMultiplierIfOddPowerSum,
+		coefficient.MinusNPlusMNegateMultiplierIfOddPowerSum,
 	}
 
 	for _, relationshipToTest := range relationshipsToTest {
@@ -112,15 +118,21 @@ func SatisfiesRelationship(term1, term2 *EisensteinFormulaTerm, relationship coe
 	type TwoTermChecker func(term1, term2 *EisensteinFormulaTerm) bool
 	relationshipCheckerByRelationship := map[coefficient.Relationship]TwoTermChecker{
 		coefficient.PlusMPlusN: satisfiesRelationshipPlusMPlusN,
-		coefficient.MinusNMinusM: satisfiesRelationshipMinusNMinusM,
-		coefficient.PlusNPlusM: satisfiesRelationshipPlusNPlusM,
-		coefficient.MinusMMinusN: satisfiesRelationshipMinusMMinusN,
-		coefficient.PlusMPlusNMaybeFlipScale: satisfiesRelationshipPlusMPlusNMaybeFlipScale,
-		coefficient.MinusMMinusNMaybeFlipScale: satisfiesRelationshipMinusMMinusNMaybeFlipScale,
-		coefficient.PlusMMinusSumNAndM: satisfiesRelationshipPlusMMinusSumNAndM,
-		coefficient.MinusSumNAndMPlusN: satisfiesRelationshipMinusSumNAndMPlusN,
-		coefficient.PlusMMinusN: satisfiesRelationshipPlusMMinusN,
-		coefficient.MinusMPlusN: satisfiesRelationshipMinusMPlusN,
+		coefficient.MinusNMinusM:                           satisfiesRelationshipMinusNMinusM,
+		coefficient.PlusNPlusM:                             satisfiesRelationshipPlusNPlusM,
+		coefficient.MinusMMinusN:                           satisfiesRelationshipMinusMMinusN,
+		coefficient.PlusMPlusNMaybeFlipScale:               satisfiesRelationshipPlusMPlusNMaybeFlipScale,
+		coefficient.MinusMMinusNMaybeFlipScale:             satisfiesRelationshipMinusMMinusNMaybeFlipScale,
+		coefficient.PlusMMinusSumNAndM:                     satisfiesRelationshipPlusMMinusSumNAndM,
+		coefficient.MinusSumNAndMPlusN:                     satisfiesRelationshipMinusSumNAndMPlusN,
+		coefficient.PlusMMinusN:                            satisfiesRelationshipPlusMMinusN,
+		coefficient.MinusMPlusN:                            satisfiesRelationshipMinusMPlusN,
+		coefficient.PlusNMinusM:                            satisfiesRelationshipPlusNMinusM,
+		coefficient.MinusNPlusM:                            satisfiesRelationshipMinusNPlusM,
+		coefficient.PlusNMinusMNegateMultiplierIfOddPowerN: satisfiesRelationshipPlusNMinusMNegateMultiplierIfOddPowerN,
+		coefficient.PlusNMinusMNegateMultiplierIfOddPowerSum: satisfiesRelationshipPlusNMinusMNegateMultiplierIfOddPowerSum,
+		coefficient.MinusNPlusMNegateMultiplierIfOddPowerN: satisfiesRelationshipMinusNPlusMNegateMultiplierIfOddPowerN,
+		coefficient.MinusNPlusMNegateMultiplierIfOddPowerSum: satisfiesRelationshipMinusNPlusMNegateMultiplierIfOddPowerSum,
 	}
 	relationshipChecker := relationshipCheckerByRelationship[relationship]
 	return relationshipChecker(term1, term2)
@@ -144,6 +156,10 @@ func satisfiesRelationshipMinusNMinusM(term1, term2 *EisensteinFormulaTerm) bool
 
 func satisfiesRelationshipPlusNPlusM(term1, term2 *EisensteinFormulaTerm) bool {
 	return termMultipliersAreTheSame(term1, term2) && term1.PowerN == term2.PowerN && term1.PowerM == term2.PowerM
+}
+
+func satisfiesRelationshipMinusNPlusM(term1, term2 *EisensteinFormulaTerm) bool {
+	return termMultipliersAreTheSame(term1, term2) && term2.PowerN == -1 * term1.PowerN && term2.PowerM == term1.PowerM
 }
 
 func satisfiesRelationshipMinusMMinusN(term1, term2 *EisensteinFormulaTerm) bool {
@@ -185,7 +201,54 @@ func satisfiesRelationshipPlusMMinusN(term1, term2 *EisensteinFormulaTerm) bool 
 func satisfiesRelationshipMinusMPlusN(term1, term2 *EisensteinFormulaTerm) bool {
 	return termMultipliersAreTheSame(term1, term2) && term2.PowerN == -1 * term1.PowerM && term2.PowerM == term1.PowerN
 }
+func satisfiesRelationshipPlusNMinusM(term1, term2 *EisensteinFormulaTerm) bool {
+	return termMultipliersAreTheSame(term1, term2) && term2.PowerN == term1.PowerN && term2.PowerM == -1 * term1.PowerM
+}
+func satisfiesRelationshipPlusNMinusMNegateMultiplierIfOddPowerN(term1, term2 *EisensteinFormulaTerm) bool {
+	if term1.PowerN % 2 == 0 && !termMultipliersAreTheSame(term1, term2) {
+		return false
+	}
 
+	if term1.PowerN % 2 != 0 && termMultipliersAreTheSame(term1, term2) {
+		return false
+	}
+
+	return term2.PowerN == term1.PowerN && term2.PowerM == -1 * term1.PowerM
+}
+func satisfiesRelationshipPlusNMinusMNegateMultiplierIfOddPowerSum(term1, term2 *EisensteinFormulaTerm) bool {
+	if term1.PowerSumIsEven() && !termMultipliersAreTheSame(term1, term2) {
+		return false
+	}
+
+	if !term1.PowerSumIsEven() && termMultipliersAreTheSame(term1, term2) {
+		return false
+	}
+
+	return term2.PowerN == term1.PowerN && term2.PowerM == -1 * term1.PowerM
+}
+
+func satisfiesRelationshipMinusNPlusMNegateMultiplierIfOddPowerN(term1, term2 *EisensteinFormulaTerm) bool {
+	if term1.PowerN % 2 == 0 && !termMultipliersAreTheSame(term1, term2) {
+		return false
+	}
+
+	if term1.PowerN % 2 != 0 && termMultipliersAreTheSame(term1, term2) {
+		return false
+	}
+
+	return term2.PowerN == -1 * term1.PowerN && term2.PowerM == term1.PowerM
+}
+func satisfiesRelationshipMinusNPlusMNegateMultiplierIfOddPowerSum(term1, term2 *EisensteinFormulaTerm) bool {
+	if term1.PowerSumIsEven() && !termMultipliersAreTheSame(term1, term2) {
+		return false
+	}
+
+	if !term1.PowerSumIsEven() && termMultipliersAreTheSame(term1, term2) {
+		return false
+	}
+
+	return term2.PowerN == -1 * term1.PowerN && term2.PowerM == term1.PowerM
+}
 // SelectTermsToSatisfyRelationships tries to find all of the terms that satisfy the given desiredRelationships.
 //   The return value will have 1 EisensteinFormulaTerm per desiredRelationship.
 //   If there are not enough terms, returns an empty list.

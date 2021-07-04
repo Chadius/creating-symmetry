@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"gopkg.in/yaml.v2"
 	"wallpaper/entities/formula"
+	"wallpaper/entities/formula/coefficient"
 	"wallpaper/entities/utility"
 
 	//"wallpaper/entities/utility"
@@ -55,18 +56,29 @@ func (Rectangular *RectangularWallpaperFormula) Calculate(z complex128) *formula
 	return Rectangular.Formula.Calculate(z)
 }
 
-//// HasSymmetry returns true if the WavePackets involved form symmetry.
-//func (Rectangular *RectangularWallpaperFormula) HasSymmetry(desiredSymmetry Symmetry) bool {
-//	return HasSymmetry(Rectangular.Formula.WavePackets, desiredSymmetry, map[Symmetry][]coefficient.Relationship {
-//		Cm: {coefficient.PlusMPlusN},
-//		Cmm: {
-//			coefficient.MinusNMinusM,
-//			coefficient.MinusMMinusN,
-//			coefficient.PlusMPlusN,
-//		},
-//	})
-//}
-//
+// HasSymmetry returns true if the WavePackets involved form symmetry.
+func (Rectangular *RectangularWallpaperFormula) HasSymmetry(desiredSymmetry Symmetry) bool {
+	return HasSymmetry(Rectangular.Formula.WavePackets, desiredSymmetry, map[Symmetry][]coefficient.Relationship {
+		Pm: {coefficient.PlusNMinusM},
+		Pg: {coefficient.PlusNMinusMNegateMultiplierIfOddPowerN},
+		Pmm: {
+			coefficient.PlusNMinusM,
+			coefficient.MinusNMinusM,
+			coefficient.MinusNPlusM,
+		},
+		Pmg: {
+			coefficient.MinusNMinusM,
+			coefficient.PlusNMinusMNegateMultiplierIfOddPowerN,
+			coefficient.MinusNPlusMNegateMultiplierIfOddPowerN,
+		},
+		Pgg: {
+			coefficient.MinusNMinusM,
+			coefficient.PlusNMinusMNegateMultiplierIfOddPowerSum,
+			coefficient.MinusNPlusMNegateMultiplierIfOddPowerSum,
+		},
+	})
+}
+
 // NewRectangularWallpaperFormulaFromJSON reads the data and returns a formula term from it.
 func NewRectangularWallpaperFormulaFromJSON(data []byte) (*RectangularWallpaperFormula, error) {
 	return newRectangularWallpaperFormulaFromDatastream(data, json.Unmarshal)

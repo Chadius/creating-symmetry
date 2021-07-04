@@ -106,4 +106,9 @@ const (
 	P4g  Symmetry = "p4g"
 	Cm   Symmetry = "cm"
 	Cmm  Symmetry = "cmm"
+	Pm   Symmetry = "pm"
+	Pg   Symmetry = "pg"
+	Pgg   Symmetry = "pgg"
+	Pmm   Symmetry = "pmm"
+	Pmg   Symmetry = "pmg"
 )
