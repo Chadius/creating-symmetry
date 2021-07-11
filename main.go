@@ -337,14 +337,31 @@ func transformCoordinatesForRectangularWallpaperFormula(wallpaperFormula *wavepa
 		fmt.Printf("%d: %e - %e\n", index, minz, maxz)
 	}
 
-	//println("Symmetries found:")
-	//if wallpaperFormula.HasSymmetry(wavepacket.Cm) {
-	//	println("  cm")
-	//}
-	//if wallpaperFormula.HasSymmetry(wavepacket.Cmm) {
-	//	println("  cmm")
-	//}
-
+	println("Symmetries found:")
+	hasSymmetry := false
+	if wallpaperFormula.HasSymmetry(wavepacket.Pm) {
+		println("  pm")
+		hasSymmetry = true
+	}
+	if wallpaperFormula.HasSymmetry(wavepacket.Pg) {
+		println("  pg")
+		hasSymmetry = true
+	}
+	if wallpaperFormula.HasSymmetry(wavepacket.Pmm) {
+		println("  pmm")
+		hasSymmetry = true
+	}
+	if wallpaperFormula.HasSymmetry(wavepacket.Pmg) {
+		println("  pmg")
+		hasSymmetry = true
+	}
+	if wallpaperFormula.HasSymmetry(wavepacket.Pgg) {
+		println("  pgg")
+		hasSymmetry = true
+	}
+	if hasSymmetry == false {
+		println("  none found")
+	}
 	return transformedCoordinates
 }
 

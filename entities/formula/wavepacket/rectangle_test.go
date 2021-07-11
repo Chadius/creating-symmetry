@@ -211,7 +211,7 @@ func (suite *RectangularWaveSymmetry) TestPm(checker *C) {
 
 	rectangularFormula.SetUp()
 	checker.Assert(rectangularFormula.HasSymmetry(wavepacket.Pm), Equals, true)
-	checker.Assert(rectangularFormula.HasSymmetry(wavepacket.Pg), Equals, false)
+	checker.Assert(rectangularFormula.HasSymmetry(wavepacket.Pg), Equals, true)
 	checker.Assert(rectangularFormula.HasSymmetry(wavepacket.Pmm), Equals, false)
 	checker.Assert(rectangularFormula.HasSymmetry(wavepacket.Pmg), Equals, false)
 	checker.Assert(rectangularFormula.HasSymmetry(wavepacket.Pgg), Equals, false)
@@ -459,137 +459,254 @@ func (suite *RectangularWaveSymmetry) TestPgg(checker *C) {
 	checker.Assert(rectangularFormulaWithEvenPowerSum.HasSymmetry(wavepacket.Pgg), Equals, true)
 }
 
-//type RectangularCreatedWithDesiredSymmetry struct {
-//	singleEisensteinFormulaTerm []*formula.EisensteinFormulaTerm
-//	wallpaperMultiplier complex128
-//	LatticeHeight float64
-//}
-//
-//var _ = Suite(&RectangularCreatedWithDesiredSymmetry{})
-//
-//func (suite *RectangularCreatedWithDesiredSymmetry) SetUpTest (checker *C) {
-//	suite.singleEisensteinFormulaTerm = []*formula.EisensteinFormulaTerm{
-//		{
-//			PowerN: 1,
-//			PowerM: -2,
-//			Multiplier: complex(1, 0),
-//		},
-//	}
-//	suite.wallpaperMultiplier = complex(1, 0)
-//	suite.LatticeHeight = 1.0
-//}
-//
-//func (suite *RectangularCreatedWithDesiredSymmetry) TestCreateWallpaperWithCm(checker *C) {
-//	RectangularFormula, err := wavepacket.NewRectangularWallpaperFormulaWithSymmetry(
-//		suite.singleEisensteinFormulaTerm,
-//		suite.wallpaperMultiplier,
-//		suite.LatticeHeight,
-//		wavepacket.Cm,
-//	)
-//
-//	checker.Assert(err, IsNil)
-//	checker.Assert(RectangularFormula.Formula.WavePackets, HasLen, 2)
-//	checker.Assert(RectangularFormula.Formula.WavePackets[0].Terms, HasLen, 2)
-//
-//	checker.Assert(RectangularFormula.Formula.WavePackets[1].Terms[0].PowerN, Equals, suite.singleEisensteinFormulaTerm[0].PowerM)
-//	checker.Assert(RectangularFormula.Formula.WavePackets[1].Terms[0].PowerM, Equals, suite.singleEisensteinFormulaTerm[0].PowerN)
-//
-//	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Cm), Equals, true)
-//	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Cmm), Equals, false)
-//}
-//
-//func (suite *RectangularCreatedWithDesiredSymmetry) TestCreateWallpaperWithCmm(checker *C) {
-//	RectangularFormula, err := wavepacket.NewRectangularWallpaperFormulaWithSymmetry(
-//		suite.singleEisensteinFormulaTerm,
-//		suite.wallpaperMultiplier,
-//		suite.LatticeHeight,
-//		wavepacket.Cmm,
-//	)
-//
-//	checker.Assert(err, IsNil)
-//	checker.Assert(RectangularFormula.Formula.WavePackets, HasLen, 4)
-//	checker.Assert(RectangularFormula.Formula.WavePackets[0].Terms, HasLen, 2)
-//
-//	checker.Assert(RectangularFormula.Formula.WavePackets[1].Terms[0].PowerN, Equals, suite.singleEisensteinFormulaTerm[0].PowerN * -1)
-//	checker.Assert(RectangularFormula.Formula.WavePackets[1].Terms[0].PowerM, Equals, suite.singleEisensteinFormulaTerm[0].PowerM * -1)
-//	checker.Assert(RectangularFormula.Formula.WavePackets[2].Terms[0].PowerN, Equals, suite.singleEisensteinFormulaTerm[0].PowerM)
-//	checker.Assert(RectangularFormula.Formula.WavePackets[2].Terms[0].PowerM, Equals, suite.singleEisensteinFormulaTerm[0].PowerN)
-//	checker.Assert(RectangularFormula.Formula.WavePackets[3].Terms[0].PowerN, Equals, suite.singleEisensteinFormulaTerm[0].PowerM * -1)
-//	checker.Assert(RectangularFormula.Formula.WavePackets[3].Terms[0].PowerM, Equals, suite.singleEisensteinFormulaTerm[0].PowerN * -1)
-//
-//	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Cm), Equals, true)
-//	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Cmm), Equals, true)
-//}
-//
-//func (suite *RectangularCreatedWithDesiredSymmetry) TestCreateDesiredSymmetryWithYAML(checker *C) {
-//	yamlByteStream := []byte(`
-//lattice_height: 0.3
-//formula:
-//  desired_symmetry: cm
-//  multiplier:
-//    real: 1.0
-//    imaginary: 0
-//  wave_packets:
-//    -
-//      multiplier:
-//        real: 1.0
-//        imaginary: 0
-//      terms:
-//        -
-//          power_n: 1
-//          power_m: -2
-//`)
-//	RectangularFormula, err := wavepacket.NewRectangularWallpaperFormulaFromYAML(yamlByteStream)
-//	checker.Assert(err, IsNil)
-//
-//	checker.Assert(RectangularFormula.Formula.WavePackets, HasLen, 2)
-//	checker.Assert(RectangularFormula.Formula.WavePackets[0].Terms[0].PowerM, Equals, -2)
-//
-//	checker.Assert(RectangularFormula.Formula.WavePackets[1].Terms[0].PowerN, Equals, -2)
-//	checker.Assert(RectangularFormula.Formula.WavePackets[1].Terms[0].PowerM, Equals, 1)
-//
-//	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Cm), Equals, true)
-//	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Cmm), Equals, false)
-//}
-//
-//func (suite *RectangularCreatedWithDesiredSymmetry) TestCreateDesiredSymmetryWithJSON(checker *C) {
-//	jsonByteStream := []byte(`{
-//				"lattice_height": 0.3,
-//				"formula": {
-//					"desired_symmetry": "cmm",
-//					"multiplier": {
-//						"real": 1.0,
-//						"imaginary": 0
-//					},
-//					"wave_packets": [
-//						{
-//							"multiplier": {
-//								"real": 1.0,
-//								"imaginary": 0
-//							},
-//							"terms": [
-//								{
-//									"power_n": 1,
-//									"power_m": -2
-//								}
-//							]
-//						}
-//					]
-//				}
-//			}`)
-//	RectangularFormula, err := wavepacket.NewRectangularWallpaperFormulaFromJSON(jsonByteStream)
-//	checker.Assert(err, IsNil)
-//
-//	checker.Assert(RectangularFormula.Formula.WavePackets, HasLen, 4)
-//	checker.Assert(RectangularFormula.Formula.WavePackets[0].Terms[0].PowerM, Equals, -2)
-//
-//	checker.Assert(RectangularFormula.Formula.WavePackets[1].Terms[0].PowerN, Equals, -1)
-//	checker.Assert(RectangularFormula.Formula.WavePackets[1].Terms[0].PowerM, Equals, 2)
-//	checker.Assert(RectangularFormula.Formula.WavePackets[2].Terms[0].PowerN, Equals, -2)
-//	checker.Assert(RectangularFormula.Formula.WavePackets[2].Terms[0].PowerM, Equals, 1)
-//	checker.Assert(RectangularFormula.Formula.WavePackets[3].Terms[0].PowerN, Equals, 2)
-//	checker.Assert(RectangularFormula.Formula.WavePackets[3].Terms[0].PowerM, Equals, -1)
-//
-//	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Cm), Equals, true)
-//	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Cmm), Equals, true)
-//}
+type RectangularCreatedWithDesiredSymmetry struct {
+	eisensteinTermWithEvenPowerNAndOddPowerSum []*formula.EisensteinFormulaTerm
+	eisensteinTermWithOddPowerNAndEvenPowerSum []*formula.EisensteinFormulaTerm
+	wallpaperMultiplier complex128
+	LatticeHeight float64
+}
+
+var _ = Suite(&RectangularCreatedWithDesiredSymmetry{})
+
+func (suite *RectangularCreatedWithDesiredSymmetry) SetUpTest (checker *C) {
+	suite.eisensteinTermWithEvenPowerNAndOddPowerSum = []*formula.EisensteinFormulaTerm{
+		{
+			PowerN:         8,
+			PowerM:         -3,
+			Multiplier: complex(1, 0),
+		},
+	}
+	suite.eisensteinTermWithOddPowerNAndEvenPowerSum = []*formula.EisensteinFormulaTerm{
+			{
+				PowerN:         7,
+				PowerM:         -3,
+				Multiplier: complex(1, 0),
+			},
+		}
+
+	suite.wallpaperMultiplier = complex(1, 0)
+	suite.LatticeHeight = 2.0
+}
+
+func (suite *RectangularCreatedWithDesiredSymmetry) TestCreateWallpaperWithPm(checker *C) {
+	RectangularFormula, err := wavepacket.NewRectangularWallpaperFormulaWithSymmetry(
+		suite.eisensteinTermWithOddPowerNAndEvenPowerSum,
+		suite.wallpaperMultiplier,
+		suite.LatticeHeight,
+		wavepacket.Pm,
+	)
+
+	checker.Assert(err, IsNil)
+	checker.Assert(RectangularFormula.Formula.WavePackets, HasLen, 2)
+	checker.Assert(RectangularFormula.Formula.WavePackets[0].Terms, HasLen, 1)
+
+	checker.Assert(RectangularFormula.Formula.WavePackets[1].Terms[0].PowerN, Equals, suite.eisensteinTermWithOddPowerNAndEvenPowerSum[0].PowerN)
+	checker.Assert(RectangularFormula.Formula.WavePackets[1].Terms[0].PowerM, Equals, suite.eisensteinTermWithOddPowerNAndEvenPowerSum[0].PowerM * -1)
+
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pm), Equals, true)
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pg), Equals, false)
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pmm), Equals, false)
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pmg), Equals, false)
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pgg), Equals, false)
+}
+
+func (suite *RectangularCreatedWithDesiredSymmetry) TestCreateWallpaperWithPg(checker *C) {
+	RectangularFormula, err := wavepacket.NewRectangularWallpaperFormulaWithSymmetry(
+		suite.eisensteinTermWithOddPowerNAndEvenPowerSum,
+		suite.wallpaperMultiplier,
+		suite.LatticeHeight,
+		wavepacket.Pg,
+	)
+
+	checker.Assert(err, IsNil)
+	checker.Assert(RectangularFormula.Formula.WavePackets, HasLen, 2)
+	checker.Assert(RectangularFormula.Formula.WavePackets[0].Terms, HasLen, 1)
+
+	checker.Assert(RectangularFormula.Formula.WavePackets[1].Terms[0].Multiplier, Equals, suite.wallpaperMultiplier * -1)
+	checker.Assert(RectangularFormula.Formula.WavePackets[1].Terms[0].PowerN, Equals, suite.eisensteinTermWithOddPowerNAndEvenPowerSum[0].PowerN)
+	checker.Assert(RectangularFormula.Formula.WavePackets[1].Terms[0].PowerM, Equals, suite.eisensteinTermWithOddPowerNAndEvenPowerSum[0].PowerM * -1)
+
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pm), Equals, false)
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pg), Equals, true)
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pmm), Equals, false)
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pmg), Equals, false)
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pgg), Equals, false)
+}
+
+func (suite *RectangularCreatedWithDesiredSymmetry) TestCreateWallpaperWithPmm(checker *C) {
+	RectangularFormula, err := wavepacket.NewRectangularWallpaperFormulaWithSymmetry(
+		suite.eisensteinTermWithOddPowerNAndEvenPowerSum,
+		suite.wallpaperMultiplier,
+		suite.LatticeHeight,
+		wavepacket.Pmm,
+	)
+
+	checker.Assert(err, IsNil)
+	checker.Assert(RectangularFormula.Formula.WavePackets, HasLen, 4)
+	checker.Assert(RectangularFormula.Formula.WavePackets[0].Terms, HasLen, 1)
+
+	checker.Assert(RectangularFormula.Formula.WavePackets[1].Terms[0].Multiplier, Equals, suite.wallpaperMultiplier)
+	checker.Assert(RectangularFormula.Formula.WavePackets[1].Terms[0].PowerN, Equals, suite.eisensteinTermWithOddPowerNAndEvenPowerSum[0].PowerN * -1)
+	checker.Assert(RectangularFormula.Formula.WavePackets[1].Terms[0].PowerM, Equals, suite.eisensteinTermWithOddPowerNAndEvenPowerSum[0].PowerM * -1)
+
+	checker.Assert(RectangularFormula.Formula.WavePackets[2].Terms[0].Multiplier, Equals, suite.wallpaperMultiplier)
+	checker.Assert(RectangularFormula.Formula.WavePackets[2].Terms[0].PowerN, Equals, suite.eisensteinTermWithOddPowerNAndEvenPowerSum[0].PowerN * -1)
+	checker.Assert(RectangularFormula.Formula.WavePackets[2].Terms[0].PowerM, Equals, suite.eisensteinTermWithOddPowerNAndEvenPowerSum[0].PowerM)
+
+	checker.Assert(RectangularFormula.Formula.WavePackets[3].Terms[0].Multiplier, Equals, suite.wallpaperMultiplier)
+	checker.Assert(RectangularFormula.Formula.WavePackets[3].Terms[0].PowerN, Equals, suite.eisensteinTermWithOddPowerNAndEvenPowerSum[0].PowerN)
+	checker.Assert(RectangularFormula.Formula.WavePackets[3].Terms[0].PowerM, Equals, suite.eisensteinTermWithOddPowerNAndEvenPowerSum[0].PowerM * -1)
+
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pm), Equals, true)
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pg), Equals, false)
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pmm), Equals, true)
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pmg), Equals, false)
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pgg), Equals, true)
+}
+
+func (suite *RectangularCreatedWithDesiredSymmetry) TestCreateWallpaperWithPmg(checker *C) {
+	RectangularFormula, err := wavepacket.NewRectangularWallpaperFormulaWithSymmetry(
+		suite.eisensteinTermWithOddPowerNAndEvenPowerSum,
+		suite.wallpaperMultiplier,
+		suite.LatticeHeight,
+		wavepacket.Pmg,
+	)
+
+	checker.Assert(err, IsNil)
+	checker.Assert(RectangularFormula.Formula.WavePackets, HasLen, 4)
+	checker.Assert(RectangularFormula.Formula.WavePackets[0].Terms, HasLen, 1)
+
+	checker.Assert(RectangularFormula.Formula.WavePackets[1].Terms[0].Multiplier, Equals, suite.wallpaperMultiplier)
+	checker.Assert(RectangularFormula.Formula.WavePackets[1].Terms[0].PowerN, Equals, suite.eisensteinTermWithOddPowerNAndEvenPowerSum[0].PowerN * -1)
+	checker.Assert(RectangularFormula.Formula.WavePackets[1].Terms[0].PowerM, Equals, suite.eisensteinTermWithOddPowerNAndEvenPowerSum[0].PowerM * -1)
+
+	checker.Assert(RectangularFormula.Formula.WavePackets[2].Terms[0].Multiplier, Equals, suite.wallpaperMultiplier * -1)
+	checker.Assert(RectangularFormula.Formula.WavePackets[2].Terms[0].PowerN, Equals, suite.eisensteinTermWithOddPowerNAndEvenPowerSum[0].PowerN * -1)
+	checker.Assert(RectangularFormula.Formula.WavePackets[2].Terms[0].PowerM, Equals, suite.eisensteinTermWithOddPowerNAndEvenPowerSum[0].PowerM)
+
+	checker.Assert(RectangularFormula.Formula.WavePackets[3].Terms[0].Multiplier, Equals, suite.wallpaperMultiplier * -1)
+	checker.Assert(RectangularFormula.Formula.WavePackets[3].Terms[0].PowerN, Equals, suite.eisensteinTermWithOddPowerNAndEvenPowerSum[0].PowerN)
+	checker.Assert(RectangularFormula.Formula.WavePackets[3].Terms[0].PowerM, Equals, suite.eisensteinTermWithOddPowerNAndEvenPowerSum[0].PowerM * -1)
+
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pm), Equals, false)
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pg), Equals, true)
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pmm), Equals, false)
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pmg), Equals, true)
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pgg), Equals, false)
+}
+
+func (suite *RectangularCreatedWithDesiredSymmetry) TestCreateWallpaperWithPgg(checker *C) {
+	RectangularFormula, err := wavepacket.NewRectangularWallpaperFormulaWithSymmetry(
+		suite.eisensteinTermWithOddPowerNAndEvenPowerSum,
+		suite.wallpaperMultiplier,
+		suite.LatticeHeight,
+		wavepacket.Pgg,
+	)
+
+	checker.Assert(err, IsNil)
+	checker.Assert(RectangularFormula.Formula.WavePackets, HasLen, 4)
+	checker.Assert(RectangularFormula.Formula.WavePackets[0].Terms, HasLen, 1)
+
+	checker.Assert(RectangularFormula.Formula.WavePackets[1].Terms[0].Multiplier, Equals, suite.wallpaperMultiplier)
+	checker.Assert(RectangularFormula.Formula.WavePackets[1].Terms[0].PowerN, Equals, suite.eisensteinTermWithOddPowerNAndEvenPowerSum[0].PowerN * -1)
+	checker.Assert(RectangularFormula.Formula.WavePackets[1].Terms[0].PowerM, Equals, suite.eisensteinTermWithOddPowerNAndEvenPowerSum[0].PowerM * -1)
+
+	checker.Assert(RectangularFormula.Formula.WavePackets[2].Terms[0].Multiplier, Equals, suite.wallpaperMultiplier)
+	checker.Assert(RectangularFormula.Formula.WavePackets[2].Terms[0].PowerN, Equals, suite.eisensteinTermWithOddPowerNAndEvenPowerSum[0].PowerN * -1)
+	checker.Assert(RectangularFormula.Formula.WavePackets[2].Terms[0].PowerM, Equals, suite.eisensteinTermWithOddPowerNAndEvenPowerSum[0].PowerM)
+
+	checker.Assert(RectangularFormula.Formula.WavePackets[3].Terms[0].Multiplier, Equals, suite.wallpaperMultiplier)
+	checker.Assert(RectangularFormula.Formula.WavePackets[3].Terms[0].PowerN, Equals, suite.eisensteinTermWithOddPowerNAndEvenPowerSum[0].PowerN)
+	checker.Assert(RectangularFormula.Formula.WavePackets[3].Terms[0].PowerM, Equals, suite.eisensteinTermWithOddPowerNAndEvenPowerSum[0].PowerM * -1)
+
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pm), Equals, true)
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pg), Equals, false)
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pmm), Equals, true)
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pmg), Equals, false)
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pgg), Equals, true)
+}
+
+func (suite *RectangularCreatedWithDesiredSymmetry) TestCreateDesiredSymmetryWithYAML(checker *C) {
+	yamlByteStream := []byte(`
+lattice_height: 0.3
+formula:
+ desired_symmetry: pmm
+ multiplier:
+   real: -1.0
+   imaginary: 2e-2
+ wave_packets:
+   -
+     multiplier:
+       real: -1.0
+       imaginary: 2e-2
+     terms:
+       -
+         power_n: 12
+         power_m: -9
+`)
+
+	RectangularFormula, err := wavepacket.NewRectangularWallpaperFormulaFromYAML(yamlByteStream)
+	checker.Assert(err, IsNil)
+
+	checker.Assert(RectangularFormula.Formula.WavePackets, HasLen, 4)
+	checker.Assert(RectangularFormula.Formula.WavePackets[0].Terms[0].PowerM, Equals, -9)
+
+	checker.Assert(RectangularFormula.Formula.WavePackets[1].Terms[0].PowerN, Equals, -12)
+	checker.Assert(RectangularFormula.Formula.WavePackets[1].Terms[0].PowerM, Equals, 9)
+
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pm), Equals, true)
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pg), Equals, true)
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pmm), Equals, true)
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pmg), Equals, true)
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pgg), Equals, false)
+}
+
+func (suite *RectangularCreatedWithDesiredSymmetry) TestCreateDesiredSymmetryWithJSON(checker *C) {
+	jsonByteStream := []byte(`{
+				"lattice_height": 0.3,
+				"formula": {
+					"desired_symmetry": "pmg",
+					"multiplier": {
+						"real": 1.0,
+						"imaginary": 0
+					},
+					"wave_packets": [
+						{
+							"multiplier": {
+								"real": 1.0,
+								"imaginary": 0
+							},
+							"terms": [
+								{
+									"power_n": 1,
+									"power_m": -2
+								}
+							]
+						}
+					]
+				}
+			}`)
+	RectangularFormula, err := wavepacket.NewRectangularWallpaperFormulaFromJSON(jsonByteStream)
+	checker.Assert(err, IsNil)
+
+	checker.Assert(RectangularFormula.Formula.WavePackets, HasLen, 4)
+	checker.Assert(RectangularFormula.Formula.WavePackets[0].Terms[0].PowerM, Equals, -2)
+
+	checker.Assert(RectangularFormula.Formula.WavePackets[1].Terms[0].Multiplier, Equals, complex(1, 0))
+	checker.Assert(RectangularFormula.Formula.WavePackets[1].Terms[0].PowerN, Equals, -1)
+	checker.Assert(RectangularFormula.Formula.WavePackets[1].Terms[0].PowerM, Equals, 2)
+
+	checker.Assert(RectangularFormula.Formula.WavePackets[2].Terms[0].Multiplier, Equals, complex(-1, 0))
+	checker.Assert(RectangularFormula.Formula.WavePackets[2].Terms[0].PowerN, Equals, -1)
+	checker.Assert(RectangularFormula.Formula.WavePackets[2].Terms[0].PowerM, Equals, -2)
+
+	checker.Assert(RectangularFormula.Formula.WavePackets[3].Terms[0].Multiplier, Equals, complex(-1, 0))
+	checker.Assert(RectangularFormula.Formula.WavePackets[3].Terms[0].PowerN, Equals, 1)
+	checker.Assert(RectangularFormula.Formula.WavePackets[3].Terms[0].PowerM, Equals, 2)
+
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pm), Equals, false)
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pg), Equals, true)
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pmm), Equals, false)
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pmg), Equals, true)
+	checker.Assert(RectangularFormula.HasSymmetry(wavepacket.Pgg), Equals, true)
+}
